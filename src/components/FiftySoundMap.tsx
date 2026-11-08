@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import {
   Grid,
-  Sparkles,
-  Volume2,
   Layers,
-  Music,
-  ArrowRight,
 } from 'lucide-react';
 import { AudioButton } from './AudioButton';
 import { playClickSound } from '../utils/soundEffects';
@@ -30,7 +26,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '買って (促音便)',
       ta: '買った',
       onbinType: '促音便 (っ)',
-      color: 'border-rose-200 bg-rose-50/50',
     },
     {
       ending: 'く',
@@ -44,7 +39,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '書いて (イ音便)',
       ta: '書いた',
       onbinType: 'イ音便 (い) *行く除外',
-      color: 'border-amber-200 bg-amber-50/50',
     },
     {
       ending: 'ぐ',
@@ -58,7 +52,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '泳いで (浊化イ音便)',
       ta: '泳いだ',
       onbinType: 'イ音便 (い + 浊化で)',
-      color: 'border-yellow-200 bg-yellow-50/50',
     },
     {
       ending: 'す',
@@ -72,7 +65,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '話して (无音便)',
       ta: '話した',
       onbinType: '无音便 (保留し)',
-      color: 'border-emerald-200 bg-emerald-50/50',
     },
     {
       ending: 'つ',
@@ -86,7 +78,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '待って (促音便)',
       ta: '待った',
       onbinType: '促音便 (っ)',
-      color: 'border-teal-200 bg-teal-50/50',
     },
     {
       ending: 'ぬ',
@@ -100,7 +91,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '死んで (拨音便)',
       ta: '死んだ',
       onbinType: '拨音便 (ん + 浊化で)',
-      color: 'border-cyan-200 bg-cyan-50/50',
     },
     {
       ending: 'ぶ',
@@ -114,7 +104,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '遊んで (拨音便)',
       ta: '遊んだ',
       onbinType: '拨音便 (ん + 浊化で)',
-      color: 'border-blue-200 bg-blue-50/50',
     },
     {
       ending: 'む',
@@ -128,7 +117,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '飲んで (拨音便)',
       ta: '飲んだ',
       onbinType: '拨音便 (ん + 浊化で)',
-      color: 'border-indigo-200 bg-indigo-50/50',
     },
     {
       ending: 'る',
@@ -142,7 +130,6 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       te: '取って (促音便)',
       ta: '取った',
       onbinType: '促音便 (っ)',
-      color: 'border-purple-200 bg-purple-50/50',
     },
   ];
 
@@ -150,23 +137,22 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
 
   return (
     <div className="space-y-6">
-      {/* Intro Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold mb-3 border border-indigo-200">
-            <Grid size={14} className="text-indigo-600" />
-            宏观音律地图 · 五段活用全系透视图
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2">
-            五十音图与五段活用全景映射
-          </h2>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            五段动词涵盖 9 大词尾（う、く、ぐ、す、つ、ぬ、ぶ、む、る）。每一行假名都在「あ・い・う・え・お」五段上完美对应一种语法形态！点击下方各行词尾，查看具体的音节流转与音便规律。
-          </p>
+      {/* Intro Document Header */}
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-3">
+        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+          <span># fifty-sound-map.md</span>
+          <span>•</span>
+          <span>音律全矩阵</span>
         </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+          五十音图与五段活用全景映射
+        </h2>
+        <p className="text-sm text-zinc-600 leading-relaxed">
+          五段动词涵盖 9 大词尾（う、く、ぐ、す、つ、ぬ、ぶ、む、る）。每一行假名都在「あ・い・う・え・お」五段上对应一种语法形态。
+        </p>
 
         {/* Quick Row Selector */}
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="pt-2 flex flex-wrap gap-1 font-mono text-xs">
           {rowsData.map(r => {
             const isSelected = activeEnding === r.ending;
             return (
@@ -177,14 +163,14 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
                   setActiveEnding(r.ending);
                   playClickSound();
                 }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded border transition-colors cursor-pointer flex items-center gap-1 ${
                   isSelected
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xs scale-105'
-                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                    : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
                 }`}
               >
-                <span className="text-sm font-black">{r.ending}</span>
-                <span className={`text-[10px] ${isSelected ? 'text-indigo-200' : 'text-slate-500'}`}>
+                <span className="font-bold">{r.ending}</span>
+                <span className={`text-[10px] ${isSelected ? 'text-zinc-700' : 'text-zinc-400'}`}>
                   {r.line}
                 </span>
               </button>
@@ -194,48 +180,48 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
       </div>
 
       {/* Detail Showcase of Active Row */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-zinc-200">
           <div>
-            <span className="text-xs font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">
-              词尾「{selectedRow.ending}」活用深度解构
-            </span>
-            <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
+            <div className="text-xs font-mono text-zinc-500 mb-0.5">
+              ### 词尾「{selectedRow.ending}」活用解构
+            </div>
+            <h3 className="text-base font-bold text-zinc-900 flex items-center gap-2">
               <span>代表动词：{selectedRow.example}</span>
               <AudioButton text={selectedRow.example.split(' ')[0]} size="sm" />
             </h3>
           </div>
-          <div className="px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
-            て形/た形音便：{selectedRow.onbinType}
+          <div className="px-2 py-0.5 rounded bg-zinc-100 border border-zinc-300 font-mono text-zinc-700 text-xs font-medium">
+            音便：{selectedRow.onbinType}
           </div>
         </div>
 
         {/* 5-Column Matrix for this row */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-5">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {[
-            { label: 'あ段 (未然形)', target: selectedRow.a, usage: '接 ない / せる / れる' },
-            { label: 'い段 (连用形)', target: selectedRow.i, usage: '接 ます / たい / 中顿' },
-            { label: 'う段 (终止形)', target: selectedRow.u, usage: '辞书形 / 原形' },
+            { label: 'あ段 (未然)', target: selectedRow.a, usage: '接 ない / せる / れる' },
+            { label: 'い段 (连用)', target: selectedRow.i, usage: '接 ます / たい / 中顿' },
+            { label: 'う段 (终止)', target: selectedRow.u, usage: '辞书形 / 原形' },
             { label: 'え段 (假定/可能)', target: selectedRow.e, usage: '接 ば / 变可能形' },
-            { label: 'お段 (意向形)', target: selectedRow.o, usage: '接 う (想要/提议)' },
+            { label: 'お段 (意向)', target: selectedRow.o, usage: '接 う (想要/提议)' },
           ].map((col, idx) => (
-            <div key={idx} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2 text-center">
-              <div className="text-[11px] font-bold text-indigo-800 bg-indigo-100/60 py-0.5 px-1.5 rounded">
+            <div key={idx} className="p-3 rounded-md border border-zinc-200 bg-zinc-50/50 space-y-1.5 text-center">
+              <div className="text-[10px] font-mono text-zinc-600 bg-white py-0.2 px-1 rounded border border-zinc-200">
                 {col.label}
               </div>
-              <div className="text-2xl font-black text-slate-900 my-1">
+              <div className="text-xl font-bold text-zinc-900 my-0.5">
                 {col.target.kana}
               </div>
               {showRomaji && (
-                <div className="text-[10px] font-mono text-slate-400">
+                <div className="text-[10px] font-mono text-zinc-400">
                   {col.target.romaji}
                 </div>
               )}
-              <div className="pt-2 border-t border-slate-200 text-xs font-bold text-slate-800 flex items-center justify-center gap-1">
+              <div className="pt-1.5 border-t border-zinc-200 text-xs font-bold text-zinc-900 flex items-center justify-center gap-1">
                 <span>{col.target.full}</span>
                 <AudioButton text={col.target.full} size="sm" />
               </div>
-              <div className="text-[10px] text-slate-500">
+              <div className="text-[10px] text-zinc-500">
                 {col.usage}
               </div>
             </div>
@@ -243,61 +229,61 @@ export const FiftySoundMap: React.FC<FiftySoundMapProps> = ({ showRomaji }) => {
         </div>
 
         {/* Onbin Explanation */}
-        <div className="mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div className="p-3 rounded-md bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-mono">
           <div>
-            <span className="font-bold text-slate-900">连接形（て形 / た形）：</span>
-            <span className="text-indigo-700 font-bold ml-1 text-sm">{selectedRow.te}</span>
-            <span className="text-slate-500 ml-2">/ {selectedRow.ta}</span>
+            <span className="text-zinc-600">连接形 (て形 / た形)：</span>
+            <span className="text-zinc-900 font-bold ml-1">{selectedRow.te}</span>
+            <span className="text-zinc-500 ml-1.5">/ {selectedRow.ta}</span>
           </div>
-          <div className="text-slate-600">
-            音便原理解析：为了发音更省力流畅而发生音节脱落或同化。
+          <div className="text-zinc-500 text-[11px]">
+            音便原理：发音生理省力而产生的音节脱落或同化。
           </div>
         </div>
       </div>
 
       {/* Comprehensive 9-Row Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs overflow-hidden">
-        <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <Layers size={18} className="text-indigo-600" />
-          五段动词 9 类词尾全矩阵速查总表
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 space-y-3">
+        <h3 className="text-xs font-mono font-bold text-zinc-700 uppercase tracking-wide flex items-center gap-2">
+          <Layers size={14} className="text-zinc-600" />
+          <span>## 五段动词 9 类词尾速查矩阵</span>
         </h3>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
-            <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[11px]">
+          <table className="w-full text-xs text-left border border-zinc-200 rounded-md overflow-hidden">
+            <thead className="bg-zinc-50 text-zinc-700 font-mono font-semibold uppercase text-[11px] border-b border-zinc-200">
               <tr>
-                <th className="p-3 rounded-l-lg">词尾</th>
-                <th className="p-3">行属</th>
-                <th className="p-3">代表词</th>
-                <th className="p-3">あ段 (未然)</th>
-                <th className="p-3">い段 (连用)</th>
-                <th className="p-3">う段 (基本)</th>
-                <th className="p-3">え段 (假定)</th>
-                <th className="p-3">お段 (意向)</th>
-                <th className="p-3 rounded-r-lg">て形音便</th>
+                <th className="p-2">词尾</th>
+                <th className="p-2">行属</th>
+                <th className="p-2">代表词</th>
+                <th className="p-2">あ段 (未然)</th>
+                <th className="p-2">い段 (连用)</th>
+                <th className="p-2">う段 (基本)</th>
+                <th className="p-2">え段 (假定)</th>
+                <th className="p-2">お段 (意向)</th>
+                <th className="p-2">て形音便</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-200">
               {rowsData.map(r => (
                 <tr
                   key={r.ending}
-                  className={`hover:bg-indigo-50/40 cursor-pointer transition-colors ${
-                    activeEnding === r.ending ? 'bg-indigo-50/70 font-semibold' : ''
+                  className={`hover:bg-zinc-50 cursor-pointer transition-colors ${
+                    activeEnding === r.ending ? 'bg-zinc-100 font-semibold' : ''
                   }`}
                   onClick={() => {
                     setActiveEnding(r.ending);
                     playClickSound();
                   }}
                 >
-                  <td className="p-3 font-black text-base text-indigo-700">{r.ending}</td>
-                  <td className="p-3 text-slate-500">{r.line}</td>
-                  <td className="p-3 font-medium text-slate-900">{r.example.split(' ')[0]}</td>
-                  <td className="p-3 font-mono text-rose-700">{r.a.kana}</td>
-                  <td className="p-3 font-mono text-amber-700">{r.i.kana}</td>
-                  <td className="p-3 font-mono text-emerald-700">{r.u.kana}</td>
-                  <td className="p-3 font-mono text-blue-700">{r.e.kana}</td>
-                  <td className="p-3 font-mono text-purple-700">{r.o.kana}</td>
-                  <td className="p-3 font-bold text-slate-700">{r.te}</td>
+                  <td className="p-2 font-mono font-bold text-sm text-zinc-900">{r.ending}</td>
+                  <td className="p-2 text-zinc-500">{r.line}</td>
+                  <td className="p-2 font-medium text-zinc-800">{r.example.split(' ')[0]}</td>
+                  <td className="p-2 font-mono text-zinc-800">{r.a.kana}</td>
+                  <td className="p-2 font-mono text-zinc-800">{r.i.kana}</td>
+                  <td className="p-2 font-mono text-zinc-800">{r.u.kana}</td>
+                  <td className="p-2 font-mono text-zinc-800">{r.e.kana}</td>
+                  <td className="p-2 font-mono text-zinc-800">{r.o.kana}</td>
+                  <td className="p-2 font-mono text-zinc-700">{r.te}</td>
                 </tr>
               ))}
             </tbody>

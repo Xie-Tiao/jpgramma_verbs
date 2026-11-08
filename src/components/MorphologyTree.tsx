@@ -3,15 +3,11 @@ import {
   GitBranch,
   Layers,
   Sparkles,
-  CheckCircle2,
   ChevronRight,
-  Plus,
   HelpCircle,
   Copy,
   Check,
-  Zap,
   Sliders,
-  Volume2,
   FolderTree,
 } from 'lucide-react';
 import { AudioButton } from './AudioButton';
@@ -22,8 +18,7 @@ interface MorphologyTreeProps {
   showRomaji: boolean;
 }
 
-export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) => {
-  // Sub-mode switcher: reverse_quiz (the new mode!) vs forward_builder vs theory_tree
+export const MorphologyTree: React.FC<MorphologyTreeProps> = () => {
   const [activeSubMode, setActiveSubMode] = useState<'reverse_quiz' | 'forward_builder' | 'theory_tree'>('reverse_quiz');
 
   // Derivation Chain Playground State
@@ -37,7 +32,6 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
 
   // Derivation logic engine
   const derivedResult = useMemo(() => {
-    // Verb stems
     const verbConfig = {
       kaku: {
         kanji: '書く',
@@ -123,23 +117,19 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
     } else if (voice === 'causative_passive') {
       if (verbConfig.group === 'ichidan') voiceStem = verbConfig.stem + 'させられる';
       else if (verbConfig.group === 'irregular') voiceStem = 'させられる';
-      else voiceStem = verbConfig.stem + verbConfig.a_row + 'せられる'; // or される
+      else voiceStem = verbConfig.stem + verbConfig.a_row + 'せられる';
       voiceMeaning = `被迫${verbConfig.meaning}`;
       steps.push({ label: '使役受身 (被迫做)', fragment: voiceStem, meaning: voiceMeaning });
     }
 
-    // Now voiceStem acts like an ichidan verb ending in る (except base godan)
     // Step 3: Modality
     let modalityStem = voiceStem;
     let modalityMeaning = voiceMeaning;
 
-    // Helper to get 'masu-stem' (ren'youkei) of the current word
     const getRenyoukei = (v: string): string => {
       if (voice !== 'base' || verbConfig.group === 'ichidan') {
-        // ends in る (一段)
         return v.endsWith('る') ? v.slice(0, -1) : v;
       }
-      // base godan or irregular
       if (verbConfig.group === 'irregular') return 'し';
       return verbConfig.stem + verbConfig.i_row;
     };
@@ -160,7 +150,7 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
     } else if (modality === 'teiru') {
       const te = getTeForm(voiceStem);
       modalityStem = te + 'いる';
-      modalityMeaning = `正在 / 处于${voiceMeaning}的状态`;
+      modalityMeaning = `处于${voiceMeaning}的状态`;
       steps.push({ label: '存续/进行 (-ている)', fragment: modalityStem, meaning: modalityMeaning });
     } else if (modality === 'sugiru') {
       const stemForSugiru = getRenyoukei(voiceStem);
@@ -180,18 +170,13 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
     }
 
     // Step 4: Politeness, Polarity & Tense
-    // modalityStem now behaves as:
-    // - i-adjective if modality === 'tai', 'yasui', 'nikui'
-    // - ichidan verb if modality === 'teiru', 'sugiru', or voice !== 'base'
-    // - original verb if modality === 'none' and voice === 'base'
     let finalWord = '';
     let finalExplanation = '';
 
     const isIAdj = modality === 'tai' || modality === 'yasui' || modality === 'nikui';
 
     if (isIAdj) {
-      // e.g. 書かせられたい (i-adjective conjugation)
-      const baseAdjStem = modalityStem.slice(0, -1); // cut 'い'
+      const baseAdjStem = modalityStem.slice(0, -1);
       if (politeness === 'plain') {
         if (polarity === 'affirmative' && tense === 'present') {
           finalWord = baseAdjStem + 'い';
@@ -207,7 +192,6 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
           finalExplanation = `当时不${modalityMeaning}`;
         }
       } else {
-        // Polite (add です / ありません)
         if (polarity === 'affirmative' && tense === 'present') {
           finalWord = baseAdjStem + 'いです';
           finalExplanation = `${modalityMeaning}（礼貌）`;
@@ -223,13 +207,10 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
         }
       }
     } else {
-      // Verb conjugation
-      // All derived verbs (causative, passive, -teiru, -sugiru) are ICHIDAN!
       const isPureBaseGodan = voice === 'base' && modality === 'none' && verbConfig.group.startsWith('godan');
       const isPureBaseIrreg = voice === 'base' && modality === 'none' && verbConfig.group === 'irregular';
 
       if (isPureBaseGodan) {
-        // Godan plain/polite
         if (politeness === 'plain') {
           if (polarity === 'affirmative' && tense === 'present') finalWord = verbConfig.kanji;
           else if (polarity === 'negative' && tense === 'present') finalWord = verbConfig.stem + verbConfig.a_row + 'ない';
@@ -254,7 +235,6 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
           else finalWord = 'しませんでした';
         }
       } else {
-        // Standard Ichidan stem (cut る)
         const vStem = modalityStem.endsWith('る') ? modalityStem.slice(0, -1) : modalityStem;
         if (politeness === 'plain') {
           if (polarity === 'affirmative' && tense === 'present') finalWord = vStem + 'る';
@@ -269,7 +249,7 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
         }
       }
 
-      finalExplanation = `${polarity === 'negative' ? '不/没' : ''}${tense === 'past' ? '之前' : ''}${modalityMeaning}${politeness === 'polite' ? '（礼貌体）' : '（简体）'}`;
+      finalExplanation = `${polarity === 'negative' ? '不/没' : ''}${tense === 'past' ? '当时' : ''}${modalityMeaning}${politeness === 'polite' ? '（敬体）' : '（简体）'}`;
     }
 
     return {
@@ -289,144 +269,140 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
   };
 
   return (
-    <div className="space-y-8">
-      {/* Hero Overview */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
-        <div className="max-w-3xl relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/30 text-indigo-200 text-xs font-semibold mb-3 border border-indigo-400/30">
-            <GitBranch size={14} className="text-amber-300" />
-            宏观语法学权威解答 · 动词全部语法形态
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-3">
-            日语动词总共有多少种语法形态？
-          </h2>
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            回答这个问题的关键在于<strong>层次划分</strong>：从日本国文法底层的<strong>「6 大基础活用形」</strong>，到现代教学的<strong>「16 大核心形态」</strong>，再到加入时态极性展开的<strong>「64 种常用形态」</strong>，最后加上派生复合链，理论上可衍生出<strong>多达 150~200+ 种</strong>精确表达！
-          </p>
+    <div className="space-y-6">
+      {/* Markdown Document Overview Header */}
+      <div className="border border-zinc-200 bg-white rounded-lg p-5 sm:p-6 space-y-4">
+        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+          <span># morphology-tree.md</span>
+          <span>•</span>
+          <span>动词形态层级体系</span>
         </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+          日语动词总共有多少种语法形态？
+        </h2>
+        <p className="text-sm text-zinc-600 leading-relaxed">
+          回答这个问题的关键在于<strong>层次划分</strong>：从日本国文法底层的<strong>「6 大基础活用形」</strong>，到现代教学的<strong>「16 大核心形态」</strong>，再到加入时态极性展开的<strong>「64 种常用形态」</strong>，最后加上派生复合链，理论上可衍生出<strong>多达 150~200+ 种</strong>精确表达。
+        </p>
 
         {/* 4-Layer Number Metric Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-            <div className="text-[11px] text-indigo-200 font-bold uppercase tracking-wider">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+          <div className="bg-zinc-50 rounded-md p-3 border border-zinc-200">
+            <div className="text-[11px] font-mono text-zinc-500 font-semibold uppercase">
               第 1 层 · 根基母体
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-300 my-1">
+            <div className="text-xl sm:text-2xl font-bold text-zinc-900 my-0.5">
               6 大活用形
             </div>
-            <div className="text-xs text-slate-300">
-              学校文法基础六形（未然、连用、终止、连体、假定、命令）
+            <div className="text-xs text-zinc-500">
+              学校文法（未然/连用/终止/连体/假定/命令）
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-            <div className="text-[11px] text-indigo-200 font-bold uppercase tracking-wider">
+          <div className="bg-zinc-50 rounded-md p-3 border border-zinc-200">
+            <div className="text-[11px] font-mono text-zinc-500 font-semibold uppercase">
               第 2 层 · 核心语法
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-300 my-1">
-              16 大独立形态
+            <div className="text-xl sm:text-2xl font-bold text-zinc-900 my-0.5">
+              16 独立形态
             </div>
-            <div className="text-xs text-slate-300">
-              辞书、ます、ない、て、た、ば、可能、意向、受身、使役等
+            <div className="text-xs text-zinc-500">
+              辞书/ます/ない/て/た/ば/可能/意向/受身等
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-            <div className="text-[11px] text-indigo-200 font-bold uppercase tracking-wider">
+          <div className="bg-zinc-50 rounded-md p-3 border border-zinc-200">
+            <div className="text-[11px] font-mono text-zinc-500 font-semibold uppercase">
               第 3 层 · 时态极性
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-sky-300 my-1">
-              64 种象限变化
+            <div className="text-xl sm:text-2xl font-bold text-zinc-900 my-0.5">
+              64 象限变化
             </div>
-            <div className="text-xs text-slate-300">
-              简体/敬体 × 肯定/否定 × 过去/非过去四象限交叉积
+            <div className="text-xs text-zinc-500">
+              简敬体 × 肯否定 × 过去/非过去四象限交叉积
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-            <div className="text-[11px] text-indigo-200 font-bold uppercase tracking-wider">
+          <div className="bg-zinc-50 rounded-md p-3 border border-zinc-200">
+            <div className="text-[11px] font-mono text-zinc-500 font-semibold uppercase">
               第 4 层 · 派生复合链
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-rose-300 my-1">
-              150+ 种衍生形态
+            <div className="text-xl sm:text-2xl font-bold text-zinc-900 my-0.5">
+              150+ 衍生形态
             </div>
-            <div className="text-xs text-slate-300">
-              使役受身、补助动词（ておく/てしまう/てみる）、难易过度等
+            <div className="text-xs text-zinc-500">
+              使役受身、补助动词（ておく/てしまう/てみる）
             </div>
           </div>
         </div>
       </div>
 
       {/* Sub-Mode Navigation Switcher */}
-      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 p-1.5 rounded-2xl bg-slate-200/80 border border-slate-300 w-fit shadow-xs">
+      <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-md bg-zinc-100 border border-zinc-200 w-fit">
         <button
           type="button"
           onClick={() => { setActiveSubMode('reverse_quiz'); playClickSound(); }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors cursor-pointer border ${
             activeSubMode === 'reverse_quiz'
-              ? 'bg-purple-600 text-white shadow-md shadow-purple-200 scale-102'
-              : 'text-slate-700 hover:text-slate-900 hover:bg-white/70'
+              ? 'bg-white border-zinc-300 text-zinc-900 font-bold'
+              : 'bg-transparent border-transparent text-zinc-600 hover:text-zinc-900'
           }`}
         >
-          <Sparkles size={16} className={activeSubMode === 'reverse_quiz' ? 'text-amber-300' : 'text-purple-600'} />
-          <span>🎯 逆向解码拆解手术台 (反向随机出题)</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-amber-400 text-slate-950 uppercase">问答闯关</span>
+          <Sparkles size={14} className="text-zinc-500" />
+          <span>逆向解码拆解 (反向随机出题)</span>
         </button>
 
         <button
           type="button"
           onClick={() => { setActiveSubMode('forward_builder'); playClickSound(); }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors cursor-pointer border ${
             activeSubMode === 'forward_builder'
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 scale-102'
-              : 'text-slate-700 hover:text-slate-900 hover:bg-white/70'
+              ? 'bg-white border-zinc-300 text-zinc-900 font-bold'
+              : 'bg-transparent border-transparent text-zinc-600 hover:text-zinc-900'
           }`}
         >
-          <Sliders size={16} />
-          <span>🛠️ 正向派生自由组装台</span>
+          <Sliders size={14} className="text-zinc-500" />
+          <span>正向派生组装台</span>
         </button>
 
         <button
           type="button"
           onClick={() => { setActiveSubMode('theory_tree'); playClickSound(); }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors cursor-pointer border ${
             activeSubMode === 'theory_tree'
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 scale-102'
-              : 'text-slate-700 hover:text-slate-900 hover:bg-white/70'
+              ? 'bg-white border-zinc-300 text-zinc-900 font-bold'
+              : 'bg-transparent border-transparent text-zinc-600 hover:text-zinc-900'
           }`}
         >
-          <FolderTree size={16} />
-          <span>🌳 动词形态家谱树 (6大活用形与16核心形态)</span>
+          <FolderTree size={14} className="text-zinc-500" />
+          <span>形态全览表 (6活用 &amp; 16形态)</span>
         </button>
       </div>
 
-      {/* Mode 1: Reverse Morphology Quiz (反向出题手术台) */}
+      {/* Mode 1: Reverse Morphology Quiz (反向出题) */}
       {activeSubMode === 'reverse_quiz' && <ReverseMorphologyQuiz />}
 
       {/* Mode 2: Forward Derivation Builder (正向拼装台) */}
       {activeSubMode === 'forward_builder' && (
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-          <div>
-            <span className="text-xs font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">
-              乐高积木式实时推导演算台
-            </span>
-            <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-              <Sliders size={20} className="text-indigo-600" />
-              动词衍生复合链生成器（Derivation Chain Builder）
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              任选动词，叠加语态、情态、礼貌度与时态极性，观察词尾如何如同齿轮般严密扣合！
-            </p>
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-5">
+        <div className="pb-3 border-b border-zinc-200">
+          <div className="text-xs font-mono text-zinc-500 mb-1">
+            ### Derivation Chain Builder
           </div>
+          <h3 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+            <Sliders size={18} className="text-zinc-700" />
+            <span>动词衍生复合链生成器</span>
+          </h3>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            任选动词，叠加语态、情态、敬简体与时态极性，观察词尾如何如同积木般严密扣合。
+          </p>
         </div>
 
         {/* Control Panels Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5">
           {/* 1. Target Verb */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-              <span>① 基础动词</span>
+            <label className="text-xs font-mono text-zinc-600 font-semibold block">
+              1. 基础动词
             </label>
             <div className="grid grid-cols-2 gap-1.5">
               {[
@@ -442,14 +418,14 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                     setTargetVerb(v.id as any);
                     playClickSound();
                   }}
-                  className={`p-2 rounded-xl border text-xs font-bold text-left transition-all cursor-pointer ${
+                  className={`p-2 rounded text-xs text-left transition-colors cursor-pointer border ${
                     targetVerb === v.id
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                      ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                      : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50'
                   }`}
                 >
                   <div>{v.label}</div>
-                  <div className={`text-[10px] ${targetVerb === v.id ? 'text-indigo-200' : 'text-slate-400'}`}>
+                  <div className={`text-[10px] font-mono ${targetVerb === v.id ? 'text-zinc-600' : 'text-zinc-400'}`}>
                     {v.sub}
                   </div>
                 </button>
@@ -459,8 +435,8 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
 
           {/* 2. Voice */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-              <span>② 语态（Voice）</span>
+            <label className="text-xs font-mono text-zinc-600 font-semibold block">
+              2. 语态 (Voice)
             </label>
             <div className="space-y-1">
               {[
@@ -476,10 +452,10 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                     setVoice(vc.id as any);
                     playClickSound();
                   }}
-                  className={`w-full p-1.5 rounded-lg border text-xs font-bold text-left transition-all cursor-pointer ${
+                  className={`w-full p-1.5 rounded text-xs text-left transition-colors cursor-pointer border ${
                     voice === vc.id
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                      ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                      : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50'
                   }`}
                 >
                   {vc.label}
@@ -490,17 +466,17 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
 
           {/* 3. Modality */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-              <span>③ 情态/补助动词</span>
+            <label className="text-xs font-mono text-zinc-600 font-semibold block">
+              3. 情态/补助词
             </label>
             <div className="space-y-1">
               {[
                 { id: 'none', label: '无额外情态' },
-                { id: 'tai', label: '想要做 (-たい)' },
-                { id: 'teiru', label: '正在进行 (-ている)' },
-                { id: 'sugiru', label: '过度做 (-すぎる)' },
-                { id: 'yasui', label: '容易做 (-やすい)' },
-                { id: 'nikui', label: '难以做 (-にくい)' },
+                { id: 'tai', label: '想做 (-たい)' },
+                { id: 'teiru', label: '进行中 (-ている)' },
+                { id: 'sugiru', label: '过度 (-すぎる)' },
+                { id: 'yasui', label: '容易 (-やすい)' },
+                { id: 'nikui', label: '难做 (-にくい)' },
               ].map(md => (
                 <button
                   key={md.id}
@@ -509,10 +485,10 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                     setModality(md.id as any);
                     playClickSound();
                   }}
-                  className={`w-full p-1.5 rounded-lg border text-xs font-bold text-left transition-all cursor-pointer ${
+                  className={`w-full p-1.5 rounded text-xs text-left transition-colors cursor-pointer border ${
                     modality === md.id
-                      ? 'bg-amber-500 border-amber-500 text-white shadow-2xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                      ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                      : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50'
                   }`}
                 >
                   {md.label}
@@ -523,13 +499,13 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
 
           {/* 4. Politeness */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-              <span>④ 敬简体 (Formality)</span>
+            <label className="text-xs font-mono text-zinc-600 font-semibold block">
+              4. 敬简体
             </label>
             <div className="space-y-1">
               {[
-                { id: 'plain', label: '普通体 (简体/朋友同辈)' },
-                { id: 'polite', label: '礼貌体 (敬体 -ます/です)' },
+                { id: 'plain', label: '简体 (普通体)' },
+                { id: 'polite', label: '敬体 (-ます/です)' },
               ].map(p => (
                 <button
                   key={p.id}
@@ -538,10 +514,10 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                     setPoliteness(p.id as any);
                     playClickSound();
                   }}
-                  className={`w-full p-2 rounded-lg border text-xs font-bold text-left transition-all cursor-pointer ${
+                  className={`w-full p-2 rounded text-xs text-left transition-colors cursor-pointer border ${
                     politeness === p.id
-                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-2xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                      ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                      : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50'
                   }`}
                 >
                   {p.label}
@@ -552,16 +528,16 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
 
           {/* 5. Tense & Polarity */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-              <span>⑤ 时态与肯定否定</span>
+            <label className="text-xs font-mono text-zinc-600 font-semibold block">
+              5. 极性与时态
             </label>
             <div className="space-y-1">
               <div className="grid grid-cols-2 gap-1">
                 <button
                   type="button"
                   onClick={() => { setPolarity('affirmative'); playClickSound(); }}
-                  className={`p-1.5 rounded-lg border text-xs font-bold text-center cursor-pointer ${
-                    polarity === 'affirmative' ? 'bg-indigo-600 text-white' : 'bg-slate-50 text-slate-700'
+                  className={`p-1.5 rounded text-xs text-center cursor-pointer border ${
+                    polarity === 'affirmative' ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold' : 'bg-white border-zinc-200 text-zinc-600'
                   }`}
                 >
                   肯定
@@ -569,8 +545,8 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                 <button
                   type="button"
                   onClick={() => { setPolarity('negative'); playClickSound(); }}
-                  className={`p-1.5 rounded-lg border text-xs font-bold text-center cursor-pointer ${
-                    polarity === 'negative' ? 'bg-rose-600 text-white' : 'bg-slate-50 text-slate-700'
+                  className={`p-1.5 rounded text-xs text-center cursor-pointer border ${
+                    polarity === 'negative' ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold' : 'bg-white border-zinc-200 text-zinc-600'
                   }`}
                 >
                   否定
@@ -581,17 +557,17 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                 <button
                   type="button"
                   onClick={() => { setTense('present'); playClickSound(); }}
-                  className={`p-1.5 rounded-lg border text-xs font-bold text-center cursor-pointer ${
-                    tense === 'present' ? 'bg-indigo-600 text-white' : 'bg-slate-50 text-slate-700'
+                  className={`p-1.5 rounded text-xs text-center cursor-pointer border ${
+                    tense === 'present' ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold' : 'bg-white border-zinc-200 text-zinc-600'
                   }`}
                 >
-                  现在/将来
+                  非过去
                 </button>
                 <button
                   type="button"
                   onClick={() => { setTense('past'); playClickSound(); }}
-                  className={`p-1.5 rounded-lg border text-xs font-bold text-center cursor-pointer ${
-                    tense === 'past' ? 'bg-indigo-600 text-white' : 'bg-slate-50 text-slate-700'
+                  className={`p-1.5 rounded text-xs text-center cursor-pointer border ${
+                    tense === 'past' ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold' : 'bg-white border-zinc-200 text-zinc-600'
                   }`}
                 >
                   过去时
@@ -601,56 +577,56 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
           </div>
         </div>
 
-        {/* Live Derived Output Box */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 text-white shadow-md relative overflow-hidden">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-2">
+        {/* Live Derived Output Box (Clean Markdown Code Output) */}
+        <div className="p-4 sm:p-5 rounded-md bg-zinc-50 border border-zinc-300 text-zinc-900 space-y-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-500/40 text-indigo-200 border border-indigo-400/30">
-                  实时衍生链最终合成结果
+                <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-white text-zinc-700 border border-zinc-300 font-semibold">
+                  合成结果
                 </span>
-                <span className="text-xs text-indigo-200">
-                  公式：原形 ➔ 语态 ➔ 情态 ➔ 敬体/时态
+                <span className="text-xs font-mono text-zinc-500">
+                  原形 ➔ 语态 ➔ 情态 ➔ 时态极性
                 </span>
               </div>
 
-              {/* Big Japanese text */}
-              <div className="flex items-center gap-3">
-                <div className="text-2xl sm:text-4xl font-black text-amber-300 tracking-tight">
+              {/* Japanese text */}
+              <div className="flex items-center gap-2.5">
+                <div className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">
                   {derivedResult.finalWord}
                 </div>
-                <AudioButton text={derivedResult.finalWord} size="lg" className="text-indigo-200 hover:text-white hover:bg-white/10" />
+                <AudioButton text={derivedResult.finalWord} size="md" />
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="p-2 rounded-xl text-indigo-300 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                  className="p-1 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200 cursor-pointer"
                   title="复制形态"
                 >
-                  {copied ? <Check size={18} className="text-emerald-400" /> : <Copy size={18} />}
+                  {copied ? <Check size={16} className="text-zinc-900" /> : <Copy size={16} />}
                 </button>
               </div>
 
               {/* Natural Chinese Translation */}
-              <div className="text-sm sm:text-base text-slate-200 font-medium">
-                含义：<strong className="text-white">“{derivedResult.finalExplanation}”</strong>
+              <div className="text-sm text-zinc-700 font-medium">
+                含义：<strong className="text-zinc-900 font-semibold">“{derivedResult.finalExplanation}”</strong>
               </div>
             </div>
           </div>
 
           {/* Morphological Segments Breakdown */}
-          <div className="mt-5 pt-4 border-t border-white/10">
-            <div className="text-xs text-indigo-300 font-bold mb-2">
-              派生链拆解层级：
+          <div className="pt-3 border-t border-zinc-200">
+            <div className="text-xs font-mono text-zinc-500 mb-1.5">
+              层级拆解：
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               {derivedResult.steps.map((s, idx) => (
                 <React.Fragment key={idx}>
-                  <div className="px-3 py-1.5 rounded-lg bg-white/10 border border-white/15 text-xs">
-                    <div className="text-[10px] text-indigo-200 font-medium">{s.label}</div>
-                    <div className="font-bold text-white mt-0.5">{s.fragment}</div>
+                  <div className="px-2.5 py-1 rounded bg-white border border-zinc-200 text-xs">
+                    <div className="text-[10px] font-mono text-zinc-500">{s.label}</div>
+                    <div className="font-bold text-zinc-900 mt-0.5">{s.fragment}</div>
                   </div>
                   {idx < derivedResult.steps.length - 1 && (
-                    <ChevronRight size={14} className="text-indigo-400" />
+                    <ChevronRight size={13} className="text-zinc-400" />
                   )}
                 </React.Fragment>
               ))}
@@ -664,17 +640,17 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
       {activeSubMode === 'theory_tree' && (
       <>
       {/* Layer 1: Classical 6 Base Conjugation Forms (国文法六大活用形) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-4">
         <div>
-          <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">
-            理论之根 · 学校文法
-          </span>
-          <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-            <FolderTree size={20} className="text-amber-600" />
-            第 1 层：6 大古典基础活用形（所有形态的母体）
+          <div className="text-xs font-mono text-zinc-500 mb-1">
+            ### Layer 1: 古典学校文法
+          </div>
+          <h3 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+            <FolderTree size={18} className="text-zinc-700" />
+            <span>第 1 层：6 大古典基础活用形（母体）</span>
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            在日本传统的“国文法”理论中，无论动词如何千变万化，<strong>其基础形态永远只有且仅有 6 种</strong>。后续所有复杂的助动词都是挂接在这 6 个词干之后的：
+          <p className="text-xs sm:text-sm text-zinc-600 mt-1">
+            在日本传统的“国文法”理论中，无论动词如何变化，<strong>其基础形态只有 6 种</strong>。后续所有复杂的助动词都是挂接在这 6 个词干之后的：
           </p>
         </div>
 
@@ -729,20 +705,20 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
               badge: 'え段 / ろ',
             },
           ].map((item, idx) => (
-            <div key={idx} className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+            <div key={idx} className="p-3.5 rounded-md border border-zinc-200 bg-zinc-50/50 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-sm text-slate-900">{item.name}</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700">
+                <span className="font-bold text-xs text-zinc-900">{item.name}</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-200">
                   {item.badge}
                 </span>
               </div>
-              <div className="text-xs text-slate-500 font-medium">
+              <div className="text-xs text-zinc-500">
                 {item.meaning}
               </div>
-              <div className="pt-2 border-t border-slate-200/80 text-xs text-slate-700">
-                <span className="font-semibold text-indigo-900">核心接续：</span> {item.connects}
+              <div className="pt-1.5 border-t border-zinc-200 text-xs text-zinc-700">
+                <span className="font-semibold text-zinc-900">核心接续：</span> {item.connects}
               </div>
-              <div className="flex items-center gap-2 pt-1 text-[11px] font-mono text-slate-600">
+              <div className="flex items-center gap-2 pt-0.5 text-[11px] font-mono text-zinc-500">
                 <span>五段：{item.exampleGodan}</span>
                 <span>•</span>
                 <span>一段：{item.exampleIchidan}</span>
@@ -753,33 +729,33 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
       </div>
 
       {/* Layer 2: Modern JSL 16 Core Independent Forms */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-4">
         <div>
-          <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
-            实用教学 · JLPT 考纲
-          </span>
-          <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-            <Layers size={20} className="text-emerald-600" />
-            第 2 层：现代日语教学 16 大核心独立形态总览
+          <div className="text-xs font-mono text-zinc-500 mb-1">
+            ### Layer 2: 现代教学考纲
+          </div>
+          <h3 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+            <Layers size={18} className="text-zinc-700" />
+            <span>第 2 层：现代日语教学 16 大核心独立形态总览</span>
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            在现代对外日语教学（如《大家的日语》、JLPT）中，为了方便外国学习者记忆，通常把动词最常单独使用的形态归纳为 <strong>16 大核心形态</strong>：
+          <p className="text-xs sm:text-sm text-zinc-600 mt-1">
+            现代日语教学（如《大家的日语》、JLPT）中，通常把动词最常单独使用的形态归纳为 <strong>16 大核心形态</strong>：
           </p>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
-            <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[11px]">
+          <table className="w-full text-xs text-left border border-zinc-200 rounded-md overflow-hidden">
+            <thead className="bg-zinc-50 text-zinc-700 font-mono font-semibold uppercase text-[11px] border-b border-zinc-200">
               <tr>
-                <th className="p-3 rounded-l-lg">形态名称</th>
-                <th className="p-3">语法功能</th>
-                <th className="p-3">五段例（書く）</th>
-                <th className="p-3">一段例（食べる）</th>
-                <th className="p-3">不规则例（する/来る）</th>
-                <th className="p-3 rounded-r-lg">中文核心释义</th>
+                <th className="p-2.5">形态名称</th>
+                <th className="p-2.5">语法功能</th>
+                <th className="p-2.5">五段（書く）</th>
+                <th className="p-2.5">一段（食べる）</th>
+                <th className="p-2.5">不规则（する/来る）</th>
+                <th className="p-2.5">核心释义</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-zinc-200">
               {[
                 { name: '1. 辞书形 (原形)', func: '字典条目、简体非过去肯定', godan: '書く', ichidan: '食べる', irreg: 'する / 来る', mean: '写 / 吃 / 做 / 来' },
                 { name: '2. ます形 (敬体肯定)', func: '日常标准礼貌体', godan: '書きます', ichidan: '食べます', irreg: 'します / 来ます', mean: '写 (礼貌)' },
@@ -798,13 +774,13 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
                 { name: '15. 使役受身态', func: '被迫无可奈何做某事', godan: '書かせられる', ichidan: '食べさせられる', irreg: 'させられる', mean: '被迫去写 / 被逼吃' },
                 { name: '16. 愿望态 (-たい)', func: '第一人称表达想要做', godan: '書きたい', ichidan: '食べたい', irreg: 'したい / 来たい', mean: '想写 / 想吃' },
               ].map((row, idx) => (
-                <tr key={idx} className="hover:bg-slate-50/70">
-                  <td className="p-3 font-bold text-slate-900">{row.name}</td>
-                  <td className="p-3 text-slate-500">{row.func}</td>
-                  <td className="p-3 font-mono font-semibold text-emerald-800">{row.godan}</td>
-                  <td className="p-3 font-mono font-semibold text-blue-800">{row.ichidan}</td>
-                  <td className="p-3 font-mono font-semibold text-purple-800">{row.irreg}</td>
-                  <td className="p-3 text-slate-700 font-medium">{row.mean}</td>
+                <tr key={idx} className="hover:bg-zinc-50">
+                  <td className="p-2.5 font-semibold text-zinc-900">{row.name}</td>
+                  <td className="p-2.5 text-zinc-500">{row.func}</td>
+                  <td className="p-2.5 font-mono text-zinc-900 font-semibold">{row.godan}</td>
+                  <td className="p-2.5 font-mono text-zinc-900 font-semibold">{row.ichidan}</td>
+                  <td className="p-2.5 font-mono text-zinc-900 font-semibold">{row.irreg}</td>
+                  <td className="p-2.5 text-zinc-700">{row.mean}</td>
                 </tr>
               ))}
             </tbody>
@@ -812,45 +788,45 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
         </div>
       </div>
 
-      {/* Layer 3: Common Compound Derivations (补助动词衍生复合链) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
+      {/* Layer 3: Common Compound Derivations */}
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-4">
         <div>
-          <span className="text-xs font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded">
-            无限延伸 · 复合活用
-          </span>
-          <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-            <Sparkles size={20} className="text-purple-600" />
-            第 3 层：最常用的 12 大补助动词派生形态（连用形与て形衍生）
+          <div className="text-xs font-mono text-zinc-500 mb-1">
+            ### Layer 3: 补助动词派生
+          </div>
+          <h3 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+            <Sparkles size={18} className="text-zinc-700" />
+            <span>第 3 层：常用 12 大补助动词派生形态</span>
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            动词接上特定后缀或补助动词后，会<strong>转变为新的动词或形容词</strong>，并继续享受该词类的全新变形周期：
+          <p className="text-xs sm:text-sm text-zinc-600 mt-1">
+            动词接上特定后缀或补助动词后，会转变为新的动词或形容词，并继续享受该词类的变形周期：
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {[
             { tag: '态势', name: '～ている', mean: '正在进行 / 状态存续', eg: '書いている (正在写)' },
             { tag: '尝试', name: '～てみる', mean: '尝试做某事看看', eg: '食べてみる (尝尝看)' },
             { tag: '准备', name: '～ておく', mean: '预先准备 / 保持原样', eg: '書いておく (预先写好)' },
-            { tag: '遗憾', name: '～てしまう', mean: '彻底做完 / 糟糕遗憾', eg: '食べてしまった (吃光了/糟糕吃掉了)' },
+            { tag: '遗憾', name: '～てしまう', mean: '彻底做完 / 糟糕遗憾', eg: '食べてしまった (吃光了)' },
             { tag: '授受', name: '～てあげる / もらう / くれる', mean: '为别人做 / 得到恩惠', eg: '教えてくれる (教给我)' },
             { tag: '伴随', name: '～ながら', mean: '一边...一边...（双线动作）', eg: '話しながら (边说边...)' },
             { tag: '难易', name: '～やすい / ～にくい', mean: '容易做 / 难以做（转为い形容词）', eg: '書きやすい / 食べにくい' },
             { tag: '过度', name: '～すぎる', mean: '动作程度过分超标', eg: '食べすぎる (吃撑了)' },
-            { tag: '样态', name: '～そうだ', mean: '眼看就要发生 / 看起来好像', eg: '落ちそうだ (看起来要掉下来)' },
-            { tag: '第三人称', name: '～たがる', mean: '第三人称表现出想要的欲望', eg: '行きたがる (他表现得想去)' },
-            { tag: '方式', name: '～方 (かた)', mean: '做某事的办法/方式（转为名词）', eg: '書き方 (写法) / 食べ方 (吃法)' },
-            { tag: '义务', name: '～なければならない', mean: '不得不做 / 必须做', eg: '書かなければならない (必须写)' },
+            { tag: '样态', name: '～そうだ', mean: '眼看就要发生 / 看起来好像', eg: '落ちそうだ (看起来要掉)' },
+            { tag: '愿望', name: '～たがる', mean: '第三人称表现出想要的欲望', eg: '行きたがる (他想去)' },
+            { tag: '方式', name: '～方 (かた)', mean: '做某事的办法/方式（转为名词）', eg: '書き方 (写法)' },
+            { tag: '义务', name: '～なければならない', mean: '不得不做 / 必须做', eg: '書かなければならない' },
           ].map((item, idx) => (
-            <div key={idx} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1 text-xs">
+            <div key={idx} className="p-3 rounded-md border border-zinc-200 bg-zinc-50/50 space-y-1 text-xs">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 text-sm">{item.name}</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">
+                <span className="font-bold text-zinc-900">{item.name}</span>
+                <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">
                   {item.tag}
                 </span>
               </div>
-              <div className="text-slate-600 font-medium">{item.mean}</div>
-              <div className="pt-1 font-mono text-indigo-700 font-semibold">{item.eg}</div>
+              <div className="text-zinc-500">{item.mean}</div>
+              <div className="pt-0.5 font-mono text-zinc-800 font-semibold">{item.eg}</div>
             </div>
           ))}
         </div>
@@ -858,21 +834,15 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = ({ showRomaji }) =>
       </>
       )}
 
-      {/* Summary Box */}
-      <div className="p-5 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs sm:text-sm text-indigo-950 space-y-2 leading-relaxed">
-        <div className="font-bold text-base flex items-center gap-2 text-indigo-900">
-          <HelpCircle size={18} />
-          <span>终极总结：该如何把握日语动词的形态？</span>
+      {/* Summary Blockquote Box */}
+      <div className="border-l-3 border-zinc-400 bg-zinc-50 p-4 rounded-r-md text-xs sm:text-sm text-zinc-800 space-y-1.5 leading-relaxed">
+        <div className="font-bold flex items-center gap-1.5 text-zinc-900 text-sm">
+          <HelpCircle size={15} />
+          <span>终极总结：把握日语动词的模块化积木</span>
         </div>
-        <p>
-          不要被“上百种衍生形态”吓倒！日语语法的精髓是<strong>“模块化积木”</strong>：
+        <p className="text-zinc-600">
+          掌握 3 种基础分类（う动词、る动词、不规则动词）与 6 种底层活用形（未然、连用、终止、连体、假定、命令），所有复杂的衍生形态均是词尾机械拼接，规律 100% 稳定。
         </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li><strong>掌握 3 种分类</strong>：う动词、る动词、不规则动词；</li>
-          <li><strong>掌握 6 种底层活用形</strong>：未然、连用、终止、连体、假定、命令；</li>
-          <li><strong>熟悉 16 大常用独立形态</strong>：它们覆盖了 95% 的日常对话与考试；</li>
-          <li><strong>所有衍生形态</strong>都是通过词尾像拼积木一样一层层叠加出来的，只要语干分类对了，后面的拼接规律 100% 机械稳定！</li>
-        </ul>
       </div>
     </div>
   );

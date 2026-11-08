@@ -31,8 +31,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/70 text-slate-800 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-800 bg-grid-subtle">
-      {/* Header & Navigation */}
+    <div className="min-h-screen bg-[#fafafa] text-zinc-800 flex flex-col font-sans antialiased">
+      {/* Document Header & Navigation */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -42,8 +42,8 @@ export default function App() {
         setSoundEnabled={setSoundEnabled}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Main Document Body */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {activeTab === 'lemmatizer' && (
           <VerbLemmatizer
             showRomaji={showRomaji}
@@ -89,19 +89,21 @@ export default function App() {
         )}
       </main>
 
-      {/* Educational Footer */}
-      <footer className="mt-auto border-t border-slate-200 bg-white py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      {/* Markdown Document Footer */}
+      <footer className="mt-auto border-t border-zinc-200 bg-white py-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500 font-mono">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>日语动词分类学习体系 · 专为 JLPT N5-N1 及口语学习者设计</span>
+            <span className="text-zinc-400">#</span>
+            <span className="text-zinc-700">japanese-verb-handbook.md</span>
+            <span className="text-zinc-400">/</span>
+            <span>v2.1</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-600">
-            <span>五段动词 (う动词 / Consonant-stem)</span>
+          <div className="flex items-center gap-3 text-zinc-500">
+            <span>Group 1: 五段 (u-verb)</span>
             <span>•</span>
-            <span>一段动词 (る动词 / Vowel-stem)</span>
+            <span>Group 2: 一段 (ru-verb)</span>
             <span>•</span>
-            <span>不规则动词 (变格)</span>
+            <span>Group 3: 不规则</span>
           </div>
         </div>
       </footer>

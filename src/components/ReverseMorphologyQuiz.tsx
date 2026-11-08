@@ -1,19 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
   Sparkles,
-  HelpCircle,
   CheckCircle2,
   XCircle,
-  RefreshCw,
   ArrowRight,
   Flame,
-  Award,
   Layers,
-  ChevronRight,
   BookmarkCheck,
   RotateCcw,
-  Volume2,
-  BookOpen,
 } from 'lucide-react';
 import { AudioButton } from './AudioButton';
 import { playSuccessSound, playErrorSound, playClickSound } from '../utils/soundEffects';
@@ -23,7 +17,7 @@ export interface ReverseQuestion {
   targetWord: string;
   reading: string;
   meaning: string;
-  difficulty: 1 | 2 | 3 | 4; // 1: 初级, 2: 中级, 3: 高阶, 4: 地狱
+  difficulty: 1 | 2 | 3 | 4;
   difficultyLabel: string;
   baseVerb: string;
   voice: 'base' | 'causative' | 'passive' | 'causative_passive';
@@ -55,8 +49,8 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'present',
     segments: [
-      { text: '読ま', label: '未然形词干 (m-a)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'せる', label: '使役助动词 (让做)', color: 'bg-indigo-100 text-indigo-800' },
+      { text: '読ま', label: '未然形词干 (m-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'せる', label: '使役助动词', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '五段动词「読む」词尾む变あ段「ま」+ せる，构成使役态（简体非过去肯定）。',
   },
@@ -74,9 +68,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'past',
     segments: [
-      { text: '褒め', label: '一段动词词干', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'られ', label: '被动助动词 (被夸)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'た', label: '过去时态 (简体)', color: 'bg-amber-100 text-amber-800' },
+      { text: '褒め', label: '一段动词词干', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'られ', label: '被动助动词', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'た', label: '过去时态', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '一段动词「褒める」去掉词尾「る」+ られる（被动），再接过去时态「た」= 褒められた。',
   },
@@ -94,9 +88,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'present',
     segments: [
-      { text: '飲み', label: '连用形 (m-i)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-purple-100 text-purple-800' },
-      { text: 'ない', label: '否定后缀 (不)', color: 'bg-rose-100 text-rose-800' },
+      { text: '飲み', label: '连用形 (m-i)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ない', label: '否定后缀', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「飲む」连用形「飲み」接愿望助动词「たい」，像い形容词一样变否定「たくない」。',
   },
@@ -114,9 +108,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'past',
     segments: [
-      { text: '食べ', label: '连用形 (去る)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'すぎ', label: '过度态 (-sugiru)', color: 'bg-amber-100 text-amber-800' },
-      { text: 'た', label: '过去时态', color: 'bg-slate-100 text-slate-800' },
+      { text: '食べ', label: '连用形 (去る)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'すぎ', label: '过度态 (-sugiru)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'た', label: '过去时态', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '动词连用形接「すぎる」表示动作程度超标，过去时为「すぎた」。',
   },
@@ -134,9 +128,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'present',
     segments: [
-      { text: 'こ', label: 'カ变未然形 (ko)', color: 'bg-purple-100 text-purple-800' },
-      { text: 'させ', label: '使役词干 (sase)', color: 'bg-indigo-100 text-indigo-800' },
-      { text: 'ない', label: '否定后缀 (nai)', color: 'bg-rose-100 text-rose-800' },
+      { text: 'こ', label: 'カ变未然形 (ko)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'させ', label: '使役词干 (sase)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ない', label: '否定后缀 (nai)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '不规则动词「来る（くる）」未然形变成「こ」+ させる（使役）+ ない（否定）= 来させない。',
   },
@@ -156,10 +150,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'past',
     segments: [
-      { text: '食べ', label: '动词词干', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'させ', label: '使役态 (让/逼)', color: 'bg-indigo-100 text-indigo-800' },
-      { text: 'られ', label: '被动态 (被/受害)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'た', label: '过去完成', color: 'bg-amber-100 text-amber-800' },
+      { text: '食べ', label: '动词词干', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'させ', label: '使役态 (让/逼)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'られ', label: '被动态 (被/受害)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'た', label: '过去完成', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「使役 + 被动 = 使役受身（被迫做）」。一段动词先接「させ」，再接被动「られ」，最后接过去「た」。',
   },
@@ -177,10 +171,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'present',
     segments: [
-      { text: '待た', label: '五段未然形 (t-a)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'され', label: '使役受身缩略形 (被迫待)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'て', label: '连接形 (-te)', color: 'bg-indigo-100 text-indigo-800' },
-      { text: 'いる', label: '状态存续/进行', color: 'bg-purple-100 text-purple-800' },
+      { text: '待た', label: '五段未然形 (t-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'され', label: '使役受身缩略形', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'て', label: '连接形 (-te)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'いる', label: '状态存续/进行', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「待つ」的使役受身约音为「待たされる」（被迫等），接「ている」表示处于被迫等待的持续状态。',
   },
@@ -198,9 +192,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'past',
     segments: [
-      { text: '教え', label: '一段词干', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'られ', label: '可能/被动态', color: 'bg-blue-100 text-blue-800' },
-      { text: 'ませんでした', label: '敬体过去否定', color: 'bg-rose-100 text-rose-800' },
+      { text: '教え', label: '一段词干', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'られ', label: '可能/被动态', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ませんでした', label: '敬体过去否定', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '一段动词「教える」去る加「られる」变可能/被动态，再接「ませんでした」表达礼貌体的过去否定。',
   },
@@ -218,10 +212,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'present',
     segments: [
-      { text: '行か', label: '五段未然形 (k-a)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'せ', label: '使役态 (让去)', color: 'bg-indigo-100 text-indigo-800' },
-      { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-purple-100 text-purple-800' },
-      { text: 'ない', label: '否定后缀', color: 'bg-rose-100 text-rose-800' },
+      { text: '行か', label: '五段未然形 (k-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'せ', label: '使役态 (让去)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ない', label: '否定后缀', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「行く」➔ 使役「行かせる（让去）」➔ 愿望否定「行かせたくない（不想让他去）」。',
   },
@@ -239,9 +233,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'present',
     segments: [
-      { text: '帰ら', label: '特殊五段未然形 (r-a)', color: 'bg-amber-100 text-amber-800' },
-      { text: 'なければ', label: '否定假定 (如果不)', color: 'bg-rose-100 text-rose-800' },
-      { text: 'ならない', label: '不行 (必须做)', color: 'bg-indigo-100 text-indigo-800' },
+      { text: '帰ら', label: '特殊五段未然形 (r-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'なければ', label: '否定假定 (如果不)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ならない', label: '不行 (必须做)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '注意「帰る」是特殊五段动词，按五段走ら行未然形「帰ら」+ なければならない（必须做某事）。',
   },
@@ -261,9 +255,9 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'present',
     segments: [
-      { text: '書か', label: '五段未然 (k-a)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'せられ', label: '使役受身 (被迫做)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'たい', label: '愿望态 (想要)', color: 'bg-purple-100 text-purple-800' },
+      { text: '書か', label: '五段未然 (k-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'せられ', label: '使役受身 (被迫做)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'たい', label: '愿望态 (想要)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「書く」➔ 使役受身「書かせられる（被迫写）」➔ 去る接愿望「たい」= 書かせられたい。',
   },
@@ -281,10 +275,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'affirmative',
     tense: 'past',
     segments: [
-      { text: '飲ま', label: '五段未然 (m-a)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'され', label: '使役受身 (被灌/被迫喝)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'すぎ', label: '过度态 (-sugiru)', color: 'bg-amber-100 text-amber-800' },
-      { text: 'た', label: '过去时态', color: 'bg-slate-100 text-slate-800' },
+      { text: '飲ま', label: '五段未然 (m-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'され', label: '使役受身', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'すぎ', label: '过度态 (-sugiru)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'た', label: '过去时态', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '五段动词「飲む」使役受身约音「飲まされる」，去る接「すぎる」表示过量，过去时为「飲まされすぎた」。',
   },
@@ -302,10 +296,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'present',
     segments: [
-      { text: '食べ', label: '一段词干', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'させ', label: '使役态 (让吃)', color: 'bg-indigo-100 text-indigo-800' },
-      { text: 'たく', label: '愿望连用 (-tai)', color: 'bg-purple-100 text-purple-800' },
-      { text: 'ありません', label: '敬体否定 (无愿望)', color: 'bg-rose-100 text-rose-800' },
+      { text: '食べ', label: '一段词干', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'させ', label: '使役态 (让吃)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'たく', label: '愿望连用 (-tai)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ありません', label: '敬体否定 (无愿望)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「食べる」使役「食べさせる」+ 愿望否定敬体「たくありません」= 不想让他吃。',
   },
@@ -325,12 +319,12 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'past',
     segments: [
-      { text: '書か', label: '五段未然形 (kak-a)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'せられ', label: '使役受身 (被迫做)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-purple-100 text-purple-800' },
-      { text: 'ありませんでした', label: '敬体·过去·否定', color: 'bg-rose-100 text-rose-800' },
+      { text: '書か', label: '五段未然形 (kak-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'せられ', label: '使役受身 (被迫做)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'ありませんでした', label: '敬体·过去·否定', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
-    explanation: '极高难度多层嵌套：原形【書く】➔ 语态【使役受身 させられる（被迫写）】➔ 情态【愿望たい（想）】➔ 敬体否定过去【ありませんでした】！',
+    explanation: '高难度多层嵌套：原形【書く】➔ 语态【使役受身 させられる（被迫写）】➔ 情态【愿望たい（想）】➔ 敬体否定过去【ありませんでした】。',
   },
   {
     id: 'l4_2',
@@ -346,10 +340,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     polarity: 'negative',
     tense: 'past',
     segments: [
-      { text: '食べ', label: '一段词干 (tabe-)', color: 'bg-emerald-100 text-emerald-800' },
-      { text: 'させられ', label: '使役受身 (被迫吃)', color: 'bg-blue-100 text-blue-800' },
-      { text: 'たくなかった', label: '愿望过去否定 (不想)', color: 'bg-purple-100 text-purple-800' },
-      { text: 'です', label: '礼貌体结尾 (敬体)', color: 'bg-slate-100 text-slate-800' },
+      { text: '食べ', label: '一段词干 (tabe-)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'させられ', label: '使役受身 (被迫吃)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'たくなかった', label: '愿望过去否定 (不想)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'です', label: '礼貌体结尾 (敬体)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
     explanation: '「食べる」接使役受身「させられる」，再叠加愿望过去否定「たくなかった」，句尾加「です」保持礼貌。',
   },
@@ -363,7 +357,7 @@ export const ReverseMorphologyQuiz: React.FC = () => {
   const [userBaseVerb, setUserBaseVerb] = useState<string | null>(null);
   const [userVoice, setUserVoice] = useState<'base' | 'causative' | 'passive' | 'causative_passive' | null>(null);
   const [userModality, setUserModality] = useState<'none' | 'tai' | 'teiru' | 'sugiru' | 'yasui' | 'nikui' | 'nakereba' | null>(null);
-  const [userCombinedForm, setUserCombinedForm] = useState<string | null>(null); // formality + polarity + tense
+  const [userCombinedForm, setUserCombinedForm] = useState<string | null>(null);
 
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
@@ -383,7 +377,6 @@ export const ReverseMorphologyQuiz: React.FC = () => {
   const activeQuestionList = showMistakesOnly ? mistakes : availableQuestions;
   const currentQ = activeQuestionList[currentIdx] || availableQuestions[0];
 
-  // Reset inputs when switching questions
   const resetUserInputs = () => {
     setUserBaseVerb(null);
     setUserVoice(null);
@@ -396,13 +389,11 @@ export const ReverseMorphologyQuiz: React.FC = () => {
     resetUserInputs();
   }, [currentIdx, levelFilter, showMistakesOnly]);
 
-  // Combined Form value for evaluation
   const correctCombinedFormKey = useMemo(() => {
     if (!currentQ) return '';
     return `${currentQ.formality}_${currentQ.polarity}_${currentQ.tense}`;
   }, [currentQ]);
 
-  // Candidate verb options (including distractors)
   const baseVerbCandidates = useMemo(() => {
     if (!currentQ) return [];
     const pool = ['書く', '食べる', '読む', '褒める', '飲む', '待つ', '教える', '行く', '帰る', '来る'];
@@ -415,7 +406,6 @@ export const ReverseMorphologyQuiz: React.FC = () => {
     return candidates.sort(() => 0.5 - Math.random());
   }, [currentQ]);
 
-  // Check correctness
   const isAllAnswered =
     userBaseVerb !== null &&
     userVoice !== null &&
@@ -463,47 +453,33 @@ export const ReverseMorphologyQuiz: React.FC = () => {
     resetUserInputs();
   };
 
-  const handleRestart = () => {
-    playClickSound();
-    setCurrentIdx(0);
-    setScore(0);
-    setStreak(0);
-    setShowMistakesOnly(false);
-    resetUserInputs();
-  };
-
   if (!currentQ) return null;
 
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-purple-950 via-indigo-900 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
-        <div className="max-w-3xl relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/30 text-purple-200 text-xs font-semibold mb-3 border border-purple-400/30">
-            <Sparkles size={14} className="text-amber-300" />
-            逆向语法拆解手术台 · 反向解码闯关
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">
-            动词派生逆向解码实验室
-          </h2>
-          <p className="text-sm sm:text-base text-purple-100/90 leading-relaxed">
-            正向拼装是把积木连起来，<strong>逆向拆解则是真正的语法照妖镜</strong>！系统随机给出一个复杂的动词派生形态，请像外科医生一样精准指出：它是由<strong>哪个词根、哪种语态、哪种情态、以及什么时态极性</strong>复合而成的！
-          </p>
+      {/* Markdown Document Header */}
+      <div className="border border-zinc-200 bg-white rounded-lg p-5 sm:p-6 space-y-3">
+        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+          <span># reverse-quiz.md</span>
+          <span>•</span>
+          <span>逆向解构练习场</span>
         </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+          动词派生逆向解码实验室
+        </h2>
+        <p className="text-sm text-zinc-600 leading-relaxed">
+          系统随机给出一个复杂的动词派生形态，请指出其背后的词根、语态、情态及极性时态组合。
+        </p>
 
         {/* Stats & Streak Banner */}
-        <div className="flex flex-wrap items-center gap-3 mt-6">
-          <div className="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-center">
-            <div className="text-[10px] text-purple-200 font-bold uppercase">当前得分</div>
-            <div className="text-lg font-black text-amber-300">{score}</div>
+        <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+          <div className="px-2.5 py-1 rounded bg-zinc-50 border border-zinc-200 text-zinc-700">
+            得分: <strong className="text-zinc-900 font-bold">{score}</strong>
           </div>
 
-          <div className="px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-center flex items-center gap-1.5">
-            <Flame size={18} className="text-orange-400 fill-orange-400" />
-            <div>
-              <div className="text-[10px] text-purple-200 font-bold uppercase">连击 Combo</div>
-              <div className="text-lg font-black text-white">{streak}</div>
-            </div>
+          <div className="px-2.5 py-1 rounded bg-zinc-50 border border-zinc-200 text-zinc-700 flex items-center gap-1">
+            <Flame size={13} className="text-zinc-600" />
+            <span>连击: <strong className="text-zinc-900 font-bold">{streak}</strong></span>
           </div>
 
           {mistakes.length > 0 && (
@@ -514,33 +490,33 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                 setCurrentIdx(0);
                 playClickSound();
               }}
-              className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ml-auto ${
+              className={`px-2.5 py-1 rounded border text-xs font-mono cursor-pointer flex items-center gap-1 ml-auto ${
                 showMistakesOnly
-                  ? 'bg-rose-500 text-white border-rose-400'
-                  : 'bg-white/10 border-white/20 text-purple-200 hover:bg-white/20'
+                  ? 'bg-zinc-200 border-zinc-400 text-zinc-900 font-bold'
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100'
               }`}
             >
-              <BookmarkCheck size={14} />
-              <span>错题复盘 ({mistakes.length})</span>
+              <BookmarkCheck size={13} />
+              <span>错题 ({mistakes.length})</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Difficulty Filter Bar */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
-          <Layers size={15} />
-          <span>挑战难度级别：</span>
+      <div className="bg-white rounded-lg border border-zinc-200 p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+        <div className="flex items-center gap-1.5 font-mono text-zinc-500 font-semibold">
+          <Layers size={14} />
+          <span>关卡级别：</span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1 font-mono">
           {[
-            { id: 'ALL', label: '全部关卡' },
-            { id: 1, label: 'Level 1 (初级单层)' },
-            { id: 2, label: 'Level 2 (中级双层)' },
-            { id: 3, label: 'Level 3 (高阶三层)' },
-            { id: 4, label: 'Level 4 (终极恶魔)' },
+            { id: 'ALL', label: '全部' },
+            { id: 1, label: 'L1 初级' },
+            { id: 2, label: 'L2 中级' },
+            { id: 3, label: 'L3 高阶' },
+            { id: 4, label: 'L4 四层' },
           ].map(lvl => (
             <button
               key={lvl.id}
@@ -550,10 +526,10 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                 setCurrentIdx(0);
                 playClickSound();
               }}
-              className={`px-3 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded text-xs border transition-colors cursor-pointer ${
                 levelFilter === lvl.id
-                  ? 'bg-purple-600 border-purple-600 text-white shadow-2xs'
-                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                  ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
               }`}
             >
               {lvl.label}
@@ -563,63 +539,63 @@ export const ReverseMorphologyQuiz: React.FC = () => {
       </div>
 
       {/* Target Word Hero Dissection Stage */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-5">
+        <div className="flex items-center justify-between text-xs font-mono text-zinc-500">
+          <span className="px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-200">
             {currentQ.difficultyLabel}
           </span>
-          <span className="text-xs text-slate-400 font-mono">
-            题号 {currentIdx + 1} / {activeQuestionList.length}
+          <span>
+            {currentIdx + 1} / {activeQuestionList.length}
           </span>
         </div>
 
-        {/* Big Word Display with Audio */}
-        <div className="text-center py-4 space-y-2">
-          <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-            请拆解下列语法形态的内部构成：
+        {/* Word Display with Audio */}
+        <div className="text-center py-2 space-y-1.5">
+          <div className="text-xs font-mono text-zinc-500">
+            请拆解下列形态内部构成：
           </div>
 
-          <div className="flex items-center justify-center gap-3">
-            <span className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight font-sans">
+          <div className="flex items-center justify-center gap-2.5">
+            <span className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
               {currentQ.targetWord}
             </span>
-            <AudioButton text={currentQ.targetWord} size="lg" />
+            <AudioButton text={currentQ.targetWord} size="md" />
           </div>
 
-          <div className="text-sm text-slate-500 font-medium">
-            读音：【{currentQ.reading}】
+          <div className="text-xs text-zinc-500 font-mono">
+            【{currentQ.reading}】
           </div>
         </div>
 
-        {/* Interactive Surgery Slots (4 Slots) */}
-        <div className="pt-2 border-t border-slate-100 space-y-5">
+        {/* Interactive Slots (4 Slots) */}
+        <div className="pt-3 border-t border-zinc-200 space-y-4">
           {/* Slot 1: Base Verb */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-slate-800 flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-[11px]">1</span>
-                <span>基础动词原形（词根）：</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-zinc-800 font-semibold flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">1</span>
+                <span>词根原形：</span>
               </span>
               {isAnswered && (
-                <span className={`text-[11px] font-bold ${isBaseCorrect ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <span className={`text-[11px] font-semibold ${isBaseCorrect ? 'text-zinc-900' : 'text-zinc-500'}`}>
                   {isBaseCorrect ? '✓ 正确' : `✗ 正解：${currentQ.baseVerb}`}
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {baseVerbCandidates.map(verb => {
                 const isSelected = userBaseVerb === verb;
-                let btnClass = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
+                let btnClass = 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50';
 
                 if (isSelected) {
-                  btnClass = 'bg-emerald-600 border-emerald-600 text-white shadow-2xs font-bold';
+                  btnClass = 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold';
                 }
 
                 if (isAnswered) {
                   if (verb === currentQ.baseVerb) {
-                    btnClass = 'bg-emerald-100 border-emerald-500 text-emerald-900 font-bold ring-2 ring-emerald-400';
+                    btnClass = 'bg-zinc-100 border-zinc-500 text-zinc-900 font-bold ring-1 ring-zinc-300';
                   } else if (isSelected) {
-                    btnClass = 'bg-rose-100 border-rose-500 text-rose-900 font-bold line-through';
+                    btnClass = 'bg-zinc-50 border-zinc-200 text-zinc-400 line-through';
                   }
                 }
 
@@ -634,7 +610,7 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                       }
                     }}
                     disabled={isAnswered}
-                    className={`p-2.5 rounded-xl border text-center text-sm transition-all cursor-pointer ${btnClass}`}
+                    className={`p-2 rounded text-center text-xs transition-colors cursor-pointer border ${btnClass}`}
                   >
                     {verb}
                   </button>
@@ -644,37 +620,37 @@ export const ReverseMorphologyQuiz: React.FC = () => {
           </div>
 
           {/* Slot 2: Voice */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-slate-800 flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-[11px]">2</span>
-                <span>语态（Voice）：</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-zinc-800 font-semibold flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">2</span>
+                <span>语态 (Voice)：</span>
               </span>
               {isAnswered && (
-                <span className={`text-[11px] font-bold ${isVoiceCorrect ? 'text-emerald-600' : 'text-rose-600'}`}>
-                  {isVoiceCorrect ? '✓ 正确' : '✗ 语态判断错误'}
+                <span className={`text-[11px] font-semibold ${isVoiceCorrect ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                  {isVoiceCorrect ? '✓ 正确' : '✗ 错误'}
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {[
-                { id: 'base', label: '基础主动态 (主格做)' },
+                { id: 'base', label: '主动态 (基础)' },
                 { id: 'causative', label: '使役态 (让...做)' },
                 { id: 'passive', label: '被动态 (被...做)' },
                 { id: 'causative_passive', label: '使役受身 (被迫做)' },
               ].map(v => {
                 const isSelected = userVoice === v.id;
-                let btnClass = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
+                let btnClass = 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50';
 
                 if (isSelected) {
-                  btnClass = 'bg-blue-600 border-blue-600 text-white shadow-2xs font-bold';
+                  btnClass = 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold';
                 }
 
                 if (isAnswered) {
                   if (v.id === currentQ.voice) {
-                    btnClass = 'bg-emerald-100 border-emerald-500 text-emerald-900 font-bold ring-2 ring-emerald-400';
+                    btnClass = 'bg-zinc-100 border-zinc-500 text-zinc-900 font-bold ring-1 ring-zinc-300';
                   } else if (isSelected) {
-                    btnClass = 'bg-rose-100 border-rose-500 text-rose-900 font-bold line-through';
+                    btnClass = 'bg-zinc-50 border-zinc-200 text-zinc-400 line-through';
                   }
                 }
 
@@ -689,7 +665,7 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                       }
                     }}
                     disabled={isAnswered}
-                    className={`p-2 rounded-xl border text-center text-xs transition-all cursor-pointer ${btnClass}`}
+                    className={`p-2 rounded text-center text-xs transition-colors cursor-pointer border ${btnClass}`}
                   >
                     {v.label}
                   </button>
@@ -699,38 +675,38 @@ export const ReverseMorphologyQuiz: React.FC = () => {
           </div>
 
           {/* Slot 3: Modality */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-slate-800 flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[11px]">3</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-zinc-800 font-semibold flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">3</span>
                 <span>情态 / 辅助后缀：</span>
               </span>
               {isAnswered && (
-                <span className={`text-[11px] font-bold ${isModalityCorrect ? 'text-emerald-600' : 'text-rose-600'}`}>
-                  {isModalityCorrect ? '✓ 正确' : '✗ 情态判断错误'}
+                <span className={`text-[11px] font-semibold ${isModalityCorrect ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                  {isModalityCorrect ? '✓ 正确' : '✗ 错误'}
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {[
-                { id: 'none', label: '无额外情态 (直接变形)' },
-                { id: 'tai', label: '愿望态 (-たい 想做)' },
+                { id: 'none', label: '无额外情态' },
+                { id: 'tai', label: '愿望态 (-たい)' },
                 { id: 'teiru', label: '状态/进行 (-ている)' },
-                { id: 'sugiru', label: '过度态 (-すぎる 过分)' },
-                { id: 'nakereba', label: '必须义务 (-なければならない)' },
+                { id: 'sugiru', label: '过度态 (-すぎる)' },
+                { id: 'nakereba', label: '必须义务 (-なければ)' },
               ].map(m => {
                 const isSelected = userModality === m.id;
-                let btnClass = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
+                let btnClass = 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50';
 
                 if (isSelected) {
-                  btnClass = 'bg-purple-600 border-purple-600 text-white shadow-2xs font-bold';
+                  btnClass = 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold';
                 }
 
                 if (isAnswered) {
                   if (m.id === currentQ.modality) {
-                    btnClass = 'bg-emerald-100 border-emerald-500 text-emerald-900 font-bold ring-2 ring-emerald-400';
+                    btnClass = 'bg-zinc-100 border-zinc-500 text-zinc-900 font-bold ring-1 ring-zinc-300';
                   } else if (isSelected) {
-                    btnClass = 'bg-rose-100 border-rose-500 text-rose-900 font-bold line-through';
+                    btnClass = 'bg-zinc-50 border-zinc-200 text-zinc-400 line-through';
                   }
                 }
 
@@ -745,7 +721,7 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                       }
                     }}
                     disabled={isAnswered}
-                    className={`p-2 rounded-xl border text-center text-xs transition-all cursor-pointer ${btnClass}`}
+                    className={`p-2 rounded text-center text-xs transition-colors cursor-pointer border ${btnClass}`}
                   >
                     {m.label}
                   </button>
@@ -755,19 +731,19 @@ export const ReverseMorphologyQuiz: React.FC = () => {
           </div>
 
           {/* Slot 4: Formality, Polarity & Tense */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-slate-800 flex items-center gap-1.5">
-                <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-[11px]">4</span>
-                <span>敬体·时态·极性（4象限落点）：</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-zinc-800 font-semibold flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">4</span>
+                <span>敬体·时态·极性：</span>
               </span>
               {isAnswered && (
-                <span className={`text-[11px] font-bold ${isFormCorrect ? 'text-emerald-600' : 'text-rose-600'}`}>
-                  {isFormCorrect ? '✓ 正确' : '✗ 时态极性错误'}
+                <span className={`text-[11px] font-semibold ${isFormCorrect ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                  {isFormCorrect ? '✓ 正确' : '✗ 错误'}
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 font-mono">
               {[
                 { id: 'plain_affirmative_present', label: '简体 · 肯定 · 非过去' },
                 { id: 'plain_negative_present', label: '简体 · 否定 · 非过去' },
@@ -779,17 +755,17 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                 { id: 'polite_negative_past', label: '敬体 · 否定 · 过去时' },
               ].map(f => {
                 const isSelected = userCombinedForm === f.id;
-                let btnClass = 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
+                let btnClass = 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50';
 
                 if (isSelected) {
-                  btnClass = 'bg-amber-600 border-amber-600 text-white shadow-2xs font-bold';
+                  btnClass = 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold';
                 }
 
                 if (isAnswered) {
                   if (f.id === correctCombinedFormKey) {
-                    btnClass = 'bg-emerald-100 border-emerald-500 text-emerald-900 font-bold ring-2 ring-emerald-400';
+                    btnClass = 'bg-zinc-100 border-zinc-500 text-zinc-900 font-bold ring-1 ring-zinc-300';
                   } else if (isSelected) {
-                    btnClass = 'bg-rose-100 border-rose-500 text-rose-900 font-bold line-through';
+                    btnClass = 'bg-zinc-50 border-zinc-200 text-zinc-400 line-through';
                   }
                 }
 
@@ -804,7 +780,7 @@ export const ReverseMorphologyQuiz: React.FC = () => {
                       }
                     }}
                     disabled={isAnswered}
-                    className={`p-2 rounded-xl border text-center text-xs transition-all cursor-pointer ${btnClass}`}
+                    className={`p-2 rounded text-center text-xs transition-colors cursor-pointer border ${btnClass}`}
                   >
                     {f.label}
                   </button>
@@ -815,15 +791,15 @@ export const ReverseMorphologyQuiz: React.FC = () => {
         </div>
 
         {/* Action Buttons: Submit / Next */}
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <div className="pt-3 border-t border-zinc-200 flex items-center justify-between">
           <button
             type="button"
             onClick={resetUserInputs}
             disabled={isAnswered}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-800 cursor-pointer disabled:opacity-40"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-mono text-zinc-500 hover:text-zinc-800 cursor-pointer disabled:opacity-40"
           >
-            <RotateCcw size={14} />
-            <span>清空重选</span>
+            <RotateCcw size={13} />
+            <span>重置选择</span>
           </button>
 
           {!isAnswered ? (
@@ -831,67 +807,67 @@ export const ReverseMorphologyQuiz: React.FC = () => {
               type="button"
               onClick={handleSubmit}
               disabled={!isAllAnswered}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-md ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-mono transition-colors cursor-pointer border ${
                 isAllAnswered
-                  ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200 scale-102'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                  ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-zinc-300 font-bold'
+                  : 'bg-zinc-50 text-zinc-400 border-zinc-200 cursor-not-allowed'
               }`}
             >
-              <span>提交手术拆解诊断</span>
-              <CheckCircle2 size={16} />
+              <span>提交诊断</span>
+              <CheckCircle2 size={14} />
             </button>
           ) : (
             <button
               type="button"
               onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md shadow-purple-200 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-mono font-bold text-xs border border-zinc-300 transition-colors cursor-pointer"
             >
               <span>下一题</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={14} />
             </button>
           )}
         </div>
 
         {/* Exploded Segment Breakdown (Dissection Results) */}
         {isAnswered && (
-          <div className="mt-4 p-5 rounded-2xl bg-slate-900 text-white space-y-4 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+          <div className="p-4 rounded-md bg-zinc-50 border border-zinc-300 text-zinc-900 space-y-3">
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-1.5 font-semibold">
                 {isTotalCorrect ? (
-                  <span className="flex items-center gap-1 text-emerald-400 font-bold text-sm">
-                    <CheckCircle2 size={18} />
-                    <span>全部解构正确！+20 分！</span>
+                  <span className="flex items-center gap-1 text-zinc-900">
+                    <CheckCircle2 size={16} />
+                    <span>全部解构正确！+20 分</span>
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-rose-400 font-bold text-sm">
-                    <XCircle size={18} />
-                    <span>部分解构错误，已收入错题本！</span>
+                  <span className="flex items-center gap-1 text-zinc-600">
+                    <XCircle size={16} />
+                    <span>部分解构错误，已录入错题本</span>
                   </span>
                 )}
               </div>
-              <div className="text-xs text-slate-400">
-                中文释义：“{currentQ.meaning}”
+              <div className="text-zinc-500 font-medium">
+                释义：“{currentQ.meaning}”
               </div>
             </div>
 
             {/* Exploded Segments Visual */}
             <div>
-              <div className="text-xs text-slate-400 font-bold mb-2">
-                词节手术切片彩色高亮：
+              <div className="text-xs font-mono text-zinc-500 mb-1.5">
+                词节切片构成：
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {currentQ.segments.map((seg, idx) => (
                   <React.Fragment key={idx}>
-                    <div className="px-3.5 py-2 rounded-xl bg-white/10 border border-white/20 text-center">
-                      <div className="text-lg font-black text-amber-300 font-sans">
+                    <div className="px-2.5 py-1.5 rounded bg-white border border-zinc-200 text-center">
+                      <div className="text-base font-bold text-zinc-900">
                         {seg.text}
                       </div>
-                      <div className="text-[10px] text-slate-300 font-medium mt-0.5">
+                      <div className="text-[10px] font-mono text-zinc-500">
                         {seg.label}
                       </div>
                     </div>
                     {idx < currentQ.segments.length - 1 && (
-                      <span className="text-slate-500 font-bold text-lg">+</span>
+                      <span className="text-zinc-400 font-mono text-sm">+</span>
                     )}
                   </React.Fragment>
                 ))}
@@ -899,8 +875,8 @@ export const ReverseMorphologyQuiz: React.FC = () => {
             </div>
 
             {/* Explanation Note */}
-            <div className="pt-3 border-t border-white/10 text-xs text-slate-300 leading-relaxed">
-              💡 <strong>深度语法脉络解析：</strong> {currentQ.explanation}
+            <div className="pt-2 border-t border-zinc-200 text-xs text-zinc-600 leading-relaxed">
+              💡 <strong>语法脉络解析：</strong> {currentQ.explanation}
             </div>
           </div>
         )}

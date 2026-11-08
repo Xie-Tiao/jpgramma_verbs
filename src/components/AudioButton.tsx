@@ -42,8 +42,8 @@ export const AudioButton: React.FC<AudioButtonProps> = ({
     <button
       type="button"
       onClick={handlePlay}
-      className={`inline-flex items-center justify-center rounded-full text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 active:scale-95 transition-all cursor-pointer ${sizeClasses[size]} ${
-        isPlaying ? 'text-indigo-600 bg-indigo-100 ring-2 ring-indigo-300 animate-pulse' : ''
+      className={`inline-flex items-center justify-center rounded-full text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 active:scale-95 transition-all cursor-pointer ${sizeClasses[size]} ${
+        isPlaying ? 'text-zinc-950 bg-zinc-200 ring-2 ring-zinc-400 animate-pulse' : ''
       } ${className}`}
       title={title}
       aria-label={`朗读 ${text}`}

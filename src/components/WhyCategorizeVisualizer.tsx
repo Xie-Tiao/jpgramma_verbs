@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Layers,
   Sparkles,
   AlertOctagon,
   ArrowRight,
   Puzzle,
   RotateCw,
-  Sliders,
-  Volume2,
 } from 'lucide-react';
 import { AudioButton } from './AudioButton';
 import { playClickSound } from '../utils/soundEffects';
@@ -34,117 +31,110 @@ export const WhyCategorizeVisualizer: React.FC = () => {
   }[selectedUGear];
 
   return (
-    <div className="space-y-8">
-      {/* Overview Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold mb-3 border border-indigo-200">
-            <Sparkles size={14} className="text-indigo-600" />
-            语言学本质剖析 · 为什么需要分类？
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-3">
-            根本原因：两套完全不同的“发音机械结构”
-          </h2>
-          <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-            日语中没有英语那样的“will”、“did”或“not”单独外挂助词，而是靠<strong>改变词尾发音与助动词紧密熔合</strong>。给动词贴上“る动词（一段）”和“う动词（五段）”的标签，不是语法学家凭空捏造的条条框框，而是日本人千百年来口语发音的自然生理习惯。
-          </p>
+    <div className="space-y-6">
+      {/* Overview Markdown Doc Header */}
+      <div className="border border-zinc-200 bg-white rounded-lg p-5 sm:p-6 space-y-3">
+        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+          <span># why-categorize.md</span>
+          <span>•</span>
+          <span>发音机理与语言学背景</span>
         </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+          根本原因：两套完全不同的“发音机械结构”
+        </h2>
+        <p className="text-sm text-zinc-600 leading-relaxed">
+          日语中没有英语那样的“will”、“did”或“not”单独外挂助词，而是靠改变词尾发音与助动词紧密熔合。给动词贴上“る动词（一段）”和“う动词（五段）”的标签，源于元音词干与辅音词干的发音生理需求。
+        </p>
 
         {/* 3 Core Principles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm mb-3">
-              1
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+          <div className="rounded-md border border-zinc-200 bg-zinc-50/50 p-3.5 space-y-1">
+            <div className="text-xs font-mono font-bold text-zinc-800 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">1</span>
+              <span>る动词 = 元音词干 (Vowel-stem)</span>
             </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1">
-              る动词 = 元音词干 (Vowel-stem)
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              词干以纯元音结尾（如 <strong>tabe-</strong>、<strong>mi-</strong>）。元音后面无论接辅音（-masu, -nai）还是元音都极其流畅，因此<strong>像乐高积木一样拔掉「る」直接插上后缀</strong>！
+            <p className="text-xs text-zinc-600 leading-relaxed">
+              词干以纯元音结尾（如 <strong>tabe-</strong>、<strong>mi-</strong>）。元音后面接任何音都极其流畅，因此直接拔掉「る」插上后缀。
             </p>
           </div>
 
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm mb-3">
-              2
+          <div className="rounded-md border border-zinc-200 bg-zinc-50/50 p-3.5 space-y-1">
+            <div className="text-xs font-mono font-bold text-zinc-800 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">2</span>
+              <span>う动词 = 辅音词干 (Consonant-stem)</span>
             </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1">
-              う动词 = 辅音词干 (Consonant-stem)
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              词干以辅音结尾（如 <strong>kak-</strong>、<strong>nom-</strong>）。日语生理上<strong>严禁两个辅音连续直拼</strong>（*kak-masu 极难发音），因此必须在五段（a, i, u, e, o）元音中旋转来“润滑”音节！
+            <p className="text-xs text-zinc-600 leading-relaxed">
+              词干以辅音结尾（如 <strong>kak-</strong>、<strong>nom-</strong>）。两个辅音不能直接碰撞，必须在五段（a, i, u, e, o）元音中旋转来润滑。
             </p>
           </div>
 
-          <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4">
-            <div className="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold text-sm mb-3">
-              3
+          <div className="rounded-md border border-zinc-200 bg-zinc-50/50 p-3.5 space-y-1">
+            <div className="text-xs font-mono font-bold text-zinc-800 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded bg-zinc-100 border border-zinc-300 text-zinc-700 text-[10px] flex items-center justify-center">3</span>
+              <span>若不分类：系统将陷入混乱</span>
             </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1">
-              不分类的后果：系统彻底崩溃
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              面对同样字面的「見る」和「知る」，如果不分类，你就不知道是变成『見ります❌』还是『知ます❌』，日语句子将充满严重歧义与语病。
+            <p className="text-xs text-zinc-600 leading-relaxed">
+              面对同样字面的「見る」和「知る」，如果不分类，就无法判定是变成『見ります❌』还是『知ます❌』，产生严重语病。
             </p>
           </div>
         </div>
       </div>
 
       {/* Interactive Demonstration 1: る动词 Detachable Building Blocks */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-zinc-200">
           <div>
-            <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">
-              一段动词模型
-            </span>
-            <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-              <Puzzle size={20} className="text-blue-600" />
-              る动词：可拆装的乐高积木模型（直接切掉「る」）
+            <div className="text-xs font-mono text-zinc-500 mb-0.5">
+              ### Model 1: 一段动词 (Vowel-stem)
+            </div>
+            <h3 className="text-base font-bold text-zinc-900 flex items-center gap-1.5">
+              <Puzzle size={16} className="text-zinc-700" />
+              <span>る动词：可拆装模块模型（切掉「る」）</span>
             </h3>
           </div>
-          <div className="text-xs text-slate-500 font-medium">
-            词干永远坚固如初，词尾自由拼装
+          <div className="text-xs font-mono text-zinc-500">
+            词干 tabe- 不变，词尾替换
           </div>
         </div>
 
-        {/* LEGO Block Demonstration */}
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white">
-          <div className="text-xs text-indigo-200 font-medium mb-3">
-            观察积木拼接：词干「食べ (tabe-)」不动，词尾「る」拔掉，替换为你选择的语法块：
+        {/* Clean Light Demonstration Box */}
+        <div className="p-4 sm:p-5 rounded-md bg-zinc-50 border border-zinc-300 text-zinc-900 space-y-3">
+          <div className="text-xs font-mono text-zinc-600">
+            词干「食べ (tabe-)」保持不动，词尾「る」拔掉，替换为所选语法后缀：
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 py-4">
+          <div className="flex flex-wrap items-center gap-2.5 py-2">
             {/* Stem Block */}
-            <div className="px-5 py-3 rounded-xl bg-blue-600 text-white font-black text-2xl tracking-wide shadow-md border-b-4 border-blue-800 flex items-center gap-2">
+            <div className="px-4 py-2 rounded bg-white border border-zinc-300 text-zinc-900 font-bold text-xl flex items-center gap-2 shadow-none">
               <span>食（た）べ</span>
-              <span className="text-xs font-mono opacity-80 font-normal">tabe- (元音词干)</span>
+              <span className="text-xs font-mono text-zinc-500 font-normal">tabe-</span>
             </div>
 
-            <span className="text-2xl text-slate-400 font-black">+</span>
+            <span className="text-xl text-zinc-400 font-bold">+</span>
 
             {/* Suffix Block */}
-            <div className="px-5 py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-2xl tracking-wide shadow-md border-b-4 border-amber-700 flex items-center gap-2 animate-fade-in">
+            <div className="px-4 py-2 rounded bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold text-xl flex items-center gap-1.5 shadow-none">
               <span>{ruSuffixData.suffix}</span>
-              <span className="text-xs font-mono text-amber-950/80 font-normal">-{ruSuffixData.romaji}</span>
+              <span className="text-xs font-mono text-zinc-500 font-normal">-{ruSuffixData.romaji}</span>
             </div>
 
-            <ArrowRight size={24} className="text-indigo-300 mx-1 hidden sm:block" />
+            <ArrowRight size={18} className="text-zinc-400 mx-1 hidden sm:block" />
 
             {/* Result */}
-            <div className="px-5 py-3 rounded-xl bg-emerald-500 text-white font-black text-2xl tracking-wide shadow-md border-b-4 border-emerald-700 flex items-center gap-3">
+            <div className="px-4 py-2 rounded bg-white border border-zinc-400 text-zinc-900 font-bold text-xl flex items-center gap-2 shadow-none">
               <span>{ruSuffixData.fullJp}</span>
-              <AudioButton text={ruSuffixData.fullJp} size="sm" className="text-emerald-100 hover:text-white hover:bg-emerald-600" />
+              <AudioButton text={ruSuffixData.fullJp} size="sm" />
             </div>
           </div>
 
           {/* Suffix Switcher Buttons */}
-          <div className="mt-5 pt-4 border-t border-slate-700">
-            <div className="text-xs text-slate-300 font-semibold mb-2">
-              切换要插入的语法积木：
+          <div className="pt-3 border-t border-zinc-200">
+            <div className="text-xs font-mono text-zinc-500 mb-1.5">
+              切换后缀模块：
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 font-mono">
               {[
-                { id: 'masu', label: '+ ます (礼貌)', suffix: 'ます' },
+                { id: 'masu', label: '+ ます (敬体)', suffix: 'ます' },
                 { id: 'nai', label: '+ ない (否定)', suffix: 'ない' },
                 { id: 'te', label: '+ て (连接)', suffix: 'て' },
                 { id: 'you', label: '+ よう (意向)', suffix: 'よう' },
@@ -160,10 +150,10 @@ export const WhyCategorizeVisualizer: React.FC = () => {
                       setSelectedRuSuffix(item.id as any);
                       playClickSound();
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer border ${
                       isSelected
-                        ? 'bg-amber-400 text-slate-900 shadow-md scale-105'
-                        : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
+                        ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                        : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
                     }`}
                   >
                     {item.label}
@@ -175,31 +165,31 @@ export const WhyCategorizeVisualizer: React.FC = () => {
         </div>
       </div>
 
-      {/* Interactive Demonstration 2: う动词 50-Sound Gear (五十音五段轮转) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+      {/* Interactive Demonstration 2: う动词 50-Sound Gear */}
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-zinc-200">
           <div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-              五段动词模型
-            </span>
-            <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-              <RotateCw size={20} className="text-emerald-600" />
-              う动词：五十音五段旋转轮盘（辅音词干 + a/i/u/e/o 润滑）
+            <div className="text-xs font-mono text-zinc-500 mb-0.5">
+              ### Model 2: 五段动词 (Consonant-stem)
+            </div>
+            <h3 className="text-base font-bold text-zinc-900 flex items-center gap-1.5">
+              <RotateCw size={16} className="text-zinc-700" />
+              <span>う动词：五十音五段轮转（辅音 kak- + 元音润滑）</span>
             </h3>
           </div>
-          <div className="text-xs text-slate-500 font-medium">
-            词干为辅音 kak-，必须由元音润滑才能接续后缀
+          <div className="text-xs font-mono text-zinc-500">
+            按 a・i・u・e・o 五段滑动
           </div>
         </div>
 
         {/* 5-Row Dial Selection */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {[
-            { row: 'a', title: 'あ段 (a)', kana: 'か', form: '未然形', color: 'bg-red-50 text-red-700 border-red-200' },
-            { row: 'i', title: 'い段 (i)', kana: 'き', form: '连用形', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-            { row: 'u', title: 'う段 (u)', kana: 'く', form: '基本形', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-            { row: 'e', title: 'え段 (e)', kana: 'け', form: '假定/可能', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-            { row: 'o', title: 'お段 (o)', kana: 'こ', form: '意向形', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+            { row: 'a', title: 'あ段 (a)', kana: 'か', form: '未然形' },
+            { row: 'i', title: 'い段 (i)', kana: 'き', form: '连用形' },
+            { row: 'u', title: 'う段 (u)', kana: 'く', form: '基本形' },
+            { row: 'e', title: 'え段 (e)', kana: 'け', form: '假定/可能' },
+            { row: 'o', title: 'お段 (o)', kana: 'こ', form: '意向形' },
           ].map(gear => {
             const isSelected = selectedUGear === gear.row;
             return (
@@ -210,19 +200,19 @@ export const WhyCategorizeVisualizer: React.FC = () => {
                   setSelectedUGear(gear.row as any);
                   playClickSound();
                 }}
-                className={`p-4 rounded-xl border text-center transition-all cursor-pointer ${
+                className={`p-3 rounded-md border text-center transition-colors cursor-pointer ${
                   isSelected
-                    ? 'ring-2 ring-emerald-500 shadow-md bg-emerald-500 text-white border-emerald-600 -translate-y-1'
-                    : `${gear.color} hover:bg-slate-50`
+                    ? 'border-zinc-400 bg-zinc-100 text-zinc-900 font-bold'
+                    : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
                 }`}
               >
-                <div className={`text-xs font-bold ${isSelected ? 'text-emerald-100' : 'opacity-70'}`}>
+                <div className={`text-[11px] font-mono ${isSelected ? 'text-zinc-800' : 'text-zinc-500'}`}>
                   {gear.title}
                 </div>
-                <div className="text-3xl font-black my-1">
+                <div className="text-2xl font-bold my-0.5 text-zinc-900">
                   {gear.kana}
                 </div>
-                <div className={`text-xs font-medium ${isSelected ? 'text-white' : 'text-slate-600'}`}>
+                <div className="text-xs font-medium text-zinc-600">
                   {gear.form}
                 </div>
               </button>
@@ -231,115 +221,115 @@ export const WhyCategorizeVisualizer: React.FC = () => {
         </div>
 
         {/* Result of the 5-Row Dial */}
-        <div className="mt-5 p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-1.5">
+        <div className="p-4 rounded-md bg-zinc-50 border border-zinc-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+          <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+              <span className="font-mono text-zinc-800 font-semibold px-1.5 py-0.2 rounded bg-white border border-zinc-200">
                 当前激活：{uGearData.row}（{uGearData.formName}）
               </span>
-              <span className="text-xs font-mono text-slate-500">
-                公式：[kak-] + [{uGearData.romajiVowel}] + [{uGearData.suffix || '∅'}]
+              <span className="font-mono text-zinc-500">
+                [kak-] + [{uGearData.romajiVowel}] + [{uGearData.suffix || '∅'}]
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-black text-slate-900">
+            <div className="flex items-center gap-2 pt-0.5">
+              <span className="text-xl font-bold text-zinc-900">
                 {uGearData.fullJp}
               </span>
-              <span className="text-sm text-slate-500 font-mono">
+              <span className="text-zinc-500 font-mono">
                 【{uGearData.fullKana} / {uGearData.fullRomaji}】
               </span>
               <AudioButton text={uGearData.fullJp} size="sm" />
             </div>
 
-            <p className="text-xs text-slate-600">
-              💡 <strong>发音原理解析：</strong> {uGearData.note}
+            <p className="text-zinc-600 pt-0.5">
+              💡 <strong>原理解析：</strong> {uGearData.note}
             </p>
           </div>
 
-          <div className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs self-stretch md:self-auto text-center">
+          <div className="px-3 py-1.5 rounded bg-white border border-zinc-200 font-mono text-[11px] text-zinc-700 text-center">
             走遍 a・i・u・e・o 五段
-            <div className="text-[11px] text-emerald-600 font-bold mt-0.5">
-              这就是“五段动词”名称的由来！
+            <div className="text-zinc-900 font-bold">
+              即“五段动词”命名由来
             </div>
           </div>
         </div>
       </div>
 
-      {/* Collision Laboratory: "What if we didn't classify?" */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-        <div className="mb-6">
-          <span className="text-xs font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded">
-            反向推演实验
-          </span>
-          <h3 className="text-xl font-black text-slate-900 mt-1 flex items-center gap-2">
-            <AlertOctagon size={20} className="text-rose-600" />
-            如果不对动词进行分类，究竟会发生什么灾难？
+      {/* Collision Laboratory Table */}
+      <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-3">
+        <div className="pb-2">
+          <div className="text-xs font-mono text-zinc-500 mb-0.5">
+            ### Contrast Experiment
+          </div>
+          <h3 className="text-base font-bold text-zinc-900 flex items-center gap-1.5">
+            <AlertOctagon size={16} className="text-zinc-700" />
+            <span>若不进行动词分类的对比实验</span>
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            我们对比两个长得极其相似的动词：<strong>見る（る动词）</strong> 与 <strong>知る（う动词）</strong>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            对比外形相似的 <strong>見る（る动词）</strong> 与 <strong>知る（う动词）</strong>
           </p>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
-            <thead className="bg-slate-100 text-slate-700 font-bold uppercase text-[11px]">
+          <table className="w-full text-xs text-left border border-zinc-200 rounded-md overflow-hidden">
+            <thead className="bg-zinc-50 text-zinc-700 font-mono font-semibold uppercase text-[11px] border-b border-zinc-200">
               <tr>
-                <th className="p-3 rounded-l-lg">目标语法形态</th>
-                <th className="p-3">る动词（一段）：見る (看)</th>
-                <th className="p-3">う动词（五段）：知る (知道)</th>
-                <th className="p-3 rounded-r-lg text-rose-700">如果不分类造成的严重错误</th>
+                <th className="p-2.5">语法形态</th>
+                <th className="p-2.5">る动词（一段）：見る (看)</th>
+                <th className="p-2.5">う动词（五段）：知る (知道)</th>
+                <th className="p-2.5">若不分类导致的错误形式</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              <tr className="hover:bg-slate-50/70">
-                <td className="p-3 font-bold text-slate-900">礼貌敬体 (ます形)</td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  見<span className="text-indigo-600">ます</span>（mimasu）
+            <tbody className="divide-y divide-zinc-200">
+              <tr className="hover:bg-zinc-50">
+                <td className="p-2.5 font-semibold text-zinc-900">礼貌敬体 (ます形)</td>
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  見<span className="font-bold underline">ます</span> (mimasu)
                 </td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  知<span className="text-indigo-600">ります</span>（shirimasu）
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  知<span className="font-bold underline">ります</span> (shirimasu)
                 </td>
-                <td className="p-3 text-rose-600 font-medium">
-                  ❌ 知ます（变成“做”的しまいます） / ❌ 見ります（发音多余）
-                </td>
-              </tr>
-
-              <tr className="hover:bg-slate-50/70">
-                <td className="p-3 font-bold text-slate-900">否定形式 (ない形)</td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  見<span className="text-indigo-600">ない</span>（minai）
-                </td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  知<span className="text-indigo-600">らない</span>（shiranai）
-                </td>
-                <td className="p-3 text-rose-600 font-medium">
-                  ❌ 知ない（辅音连缀难读） / ❌ 見らない（错误添加ra）
+                <td className="p-2.5 text-zinc-500 font-mono">
+                  ❌ 知ます（歧义） / ❌ 見ります（发音多余）
                 </td>
               </tr>
 
-              <tr className="hover:bg-slate-50/70">
-                <td className="p-3 font-bold text-slate-900">命令形式 (命令形)</td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  見<span className="text-indigo-600">ろ</span>（miro）
+              <tr className="hover:bg-zinc-50">
+                <td className="p-2.5 font-semibold text-zinc-900">否定形式 (ない形)</td>
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  見<span className="font-bold underline">ない</span> (minai)
                 </td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  知<span className="text-indigo-600">れ</span>（shire）
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  知<span className="font-bold underline">らない</span> (shiranai)
                 </td>
-                <td className="p-3 text-rose-600 font-medium">
-                  ❌ 知ろ（混淆语法） / ❌ 見れ（古语残留/不规范）
+                <td className="p-2.5 text-zinc-500 font-mono">
+                  ❌ 知ない（辅音连缀） / ❌ 見らない（多余 ra）
                 </td>
               </tr>
 
-              <tr className="hover:bg-slate-50/70">
-                <td className="p-3 font-bold text-slate-900">意向提议 (想/打算)</td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  見<span className="text-indigo-600">よう</span>（miyou）
+              <tr className="hover:bg-zinc-50">
+                <td className="p-2.5 font-semibold text-zinc-900">命令形式 (命令形)</td>
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  見<span className="font-bold underline">ろ</span> (miro)
                 </td>
-                <td className="p-3 text-emerald-700 font-bold">
-                  知<span className="text-indigo-600">ろう</span>（shirou）
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  知<span className="font-bold underline">れ</span> (shire)
                 </td>
-                <td className="p-3 text-rose-600 font-medium">
+                <td className="p-2.5 text-zinc-500 font-mono">
+                  ❌ 知ろ（混淆语法） / ❌ 見れ（古语不规范）
+                </td>
+              </tr>
+
+              <tr className="hover:bg-zinc-50">
+                <td className="p-2.5 font-semibold text-zinc-900">意向提议 (想/打算)</td>
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  見<span className="font-bold underline">よう</span> (miyou)
+                </td>
+                <td className="p-2.5 text-zinc-900 font-mono font-semibold">
+                  知<span className="font-bold underline">ろう</span> (shirou)
+                </td>
+                <td className="p-2.5 text-zinc-500 font-mono">
                   ❌ 知よう（辅音脱节） / ❌ 見ろう（多余辅音）
                 </td>
               </tr>
@@ -347,8 +337,8 @@ export const WhyCategorizeVisualizer: React.FC = () => {
           </table>
         </div>
 
-        <div className="mt-5 p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-xs text-indigo-950 font-medium leading-relaxed">
-          ✨ <strong>核心学习心法：</strong> 只要你在记忆一个动词之初，花 1 秒钟识别出它是<strong>“る动词”</strong>还是<strong>“う动词”</strong>，随后的 14 种活用、乃至进阶文法（〜ば、〜たら、〜ながら、〜そう）就会如同套用公式一般，<strong>一通百通，终身不再出错！</strong>
+        <div className="border-l-3 border-zinc-400 bg-zinc-50 p-3 rounded-r-md text-xs text-zinc-700 leading-relaxed">
+          ✨ <strong>核心学习心法：</strong> 动词记忆之初识别出它是“る动词”还是“う动词”，其后的 14 种活用乃至进阶文法（〜ば、〜たら、〜ながら、〜そう）便可机械套用公式。
         </div>
       </div>
     </div>

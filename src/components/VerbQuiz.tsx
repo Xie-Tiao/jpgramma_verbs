@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Zap,
-  Award,
   RefreshCw,
   CheckCircle2,
   XCircle,
-  HelpCircle,
-  AlertTriangle,
   ArrowRight,
   BookmarkCheck,
   Flame,
@@ -35,7 +31,6 @@ interface VerbQuizProps {
 }
 
 export const VerbQuiz: React.FC<VerbQuizProps> = ({
-  showRomaji,
   soundEnabled,
 }) => {
   const [quizMode, setQuizMode] = useState<'group' | 'trap' | 'conjugation'>('group');
@@ -48,17 +43,14 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
   const [mistakes, setMistakes] = useState<QuizQuestion[]>([]);
   const [showMistakesOnly, setShowMistakesOnly] = useState(false);
 
-  // Generate question pool based on mode
   const generateQuestions = useCallback((): QuizQuestion[] => {
     const list: QuizQuestion[] = [];
 
     if (quizMode === 'group') {
-      // Group Identification
       const sample = [...VERBS_DATABASE].sort(() => 0.5 - Math.random()).slice(0, 15);
       sample.forEach((v, i) => {
         const isGodan = v.group === 'godan';
         const isIchidan = v.group === 'ichidan';
-        const isIrreg = v.group === 'irregular';
 
         const correctId = isGodan ? 'godan' : isIchidan ? 'ichidan' : 'irregular';
 
@@ -86,23 +78,21 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
         });
       });
     } else if (quizMode === 'trap') {
-      // Trap Detection (Special Godan vs Regular Ichidan)
       const traps = VERB_EXCEPTIONS.map(e => ({
         kanji: e.kanji,
         reading: e.reading,
         meaning: e.meaning,
         isTrap: true,
         masu: e.masuProof,
-        note: e.whyTrap,
       }));
       const regulars = [
-        { kanji: '食べる', reading: 'たべる', meaning: '吃', isTrap: false, masu: '食べます', note: '下一段正常词' },
-        { kanji: '見る', reading: 'みる', meaning: '看', isTrap: false, masu: '見ます', note: '上一段正常词' },
-        { kanji: '寝る', reading: 'ねる', meaning: '睡觉', isTrap: false, masu: '寝ます', note: '下一段正常词' },
-        { kanji: '起きる', reading: 'おきる', meaning: '起床', isTrap: false, masu: '起きます', note: '上一段正常词' },
-        { kanji: '教える', reading: 'おしえる', meaning: '教学', isTrap: false, masu: '教えます', note: '下一段正常词' },
-        { kanji: '着る', reading: 'きる', meaning: '穿衣', isTrap: false, masu: '着ます', note: '上一段正常词' },
-        { kanji: '居る', reading: 'いる', meaning: '存在', isTrap: false, masu: 'います', note: '上一段正常词' },
+        { kanji: '食べる', reading: 'たべる', meaning: '吃', isTrap: false, masu: '食べます' },
+        { kanji: '見る', reading: 'みる', meaning: '看', isTrap: false, masu: '見ます' },
+        { kanji: '寝る', reading: 'ねる', meaning: '睡觉', isTrap: false, masu: '寝ます' },
+        { kanji: '起きる', reading: 'おきる', meaning: '起床', isTrap: false, masu: '起きます' },
+        { kanji: '教える', reading: 'おしえる', meaning: '教学', isTrap: false, masu: '教えます' },
+        { kanji: '着る', reading: 'きる', meaning: '穿衣', isTrap: false, masu: '着ます' },
+        { kanji: '居る', reading: 'いる', meaning: '存在', isTrap: false, masu: 'います' },
       ];
 
       const combined = [...traps, ...regulars].sort(() => 0.5 - Math.random()).slice(0, 15);
@@ -115,18 +105,17 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
           verbKanji: item.kanji,
           verbReading: item.reading,
           options: [
-            { id: 'trap', text: '⚠️ 特殊五段动词（伪装成一段的陷阱）', subText: `ます形会变「り」：${item.masu}` },
+            { id: 'trap', text: '⚠️ 特殊五段动词（外观像一段的例外）', subText: `ます形变「り」：${item.masu}` },
             { id: 'regular', text: '✅ 正常一段动词（る动词）', subText: '直接去「る」加「ます」' },
           ],
           correctOptionId: item.isTrap ? 'trap' : 'regular',
           explanation: item.isTrap
-            ? `正确！「${item.kanji}」是经典特殊五段陷阱词！ます形是『${item.masu}』。`
-            : `正确！「${item.kanji}」是规矩的正常一段动词，直接去る即可：『${item.masu}』。`,
+            ? `正确！「${item.kanji}」是特殊五段动词，ます形是『${item.masu}』。`
+            : `正确！「${item.kanji}」是规则一段动词，直接去る：『${item.masu}』。`,
           isTrap: item.isTrap,
         });
       });
     } else {
-      // Conjugation Challenge
       const candidates = [
         { v: '帰る', form: 'masu', question: '「帰る」的礼貌敬体（ます形）是？', correct: '帰ります', wrong: ['帰ます', '帰られます', '帰るます'], note: '特殊五段动词，按五段变り' },
         { v: '行く', form: 'te', question: '「行く」的连接（て形）是？', correct: '行って', wrong: ['行いて', '行きて', '行んで'], note: '行く是特殊的促音便，不是イ音便' },
@@ -209,7 +198,6 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
       setSelectedOption(null);
       setIsAnswered(false);
     } else {
-      // Quiz finished
       setSelectedOption(null);
       setIsAnswered(false);
     }
@@ -226,38 +214,29 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
     setShowMistakesOnly(false);
   };
 
-  const isCompleted = activeQuestionList.length > 0 && currentIdx >= activeQuestionList.length - 1 && isAnswered;
-
   return (
     <div className="space-y-6">
       {/* Quiz Header & Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-lg border border-zinc-200 p-4 sm:p-5 space-y-3.5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">
-                实战演练场
-              </span>
-              <div className="flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-                <Flame size={13} className="text-amber-500 fill-amber-500" />
-                <span>连击 {streak} Combo</span>
-              </div>
+            <div className="text-xs font-mono text-zinc-500 mb-0.5">
+              # quiz.md
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-900">
               动词秒判与避坑实战
             </h2>
           </div>
 
           {/* Stats Bar */}
-          <div className="flex items-center gap-3">
-            <div className="px-3.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <div className="text-[10px] text-slate-500 font-bold uppercase">当前得分</div>
-              <div className="text-lg font-black text-indigo-600">{score}</div>
+          <div className="flex items-center gap-2 font-mono text-xs">
+            <div className="px-2.5 py-1 rounded bg-zinc-50 border border-zinc-200 text-zinc-700">
+              得分: <strong className="text-zinc-900 font-bold">{score}</strong>
             </div>
 
-            <div className="px-3.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <div className="text-[10px] text-slate-500 font-bold uppercase">最高连击</div>
-              <div className="text-lg font-black text-amber-600">{maxStreak}</div>
+            <div className="px-2.5 py-1 rounded bg-zinc-50 border border-zinc-200 text-zinc-700 flex items-center gap-1">
+              <Flame size={12} className="text-zinc-500" />
+              <span>连击: <strong className="text-zinc-900 font-bold">{maxStreak}</strong></span>
             </div>
 
             {mistakes.length > 0 && (
@@ -270,25 +249,25 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
                   setSelectedOption(null);
                   playClickSound();
                 }}
-                className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded border text-xs font-mono cursor-pointer flex items-center gap-1 ${
                   showMistakesOnly
-                    ? 'bg-rose-50 border-rose-300 text-rose-700'
-                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    ? 'bg-zinc-200 border-zinc-400 text-zinc-900 font-bold'
+                    : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100'
                 }`}
               >
-                <BookmarkCheck size={14} className="text-rose-500" />
-                <span>错题本 ({mistakes.length})</span>
+                <BookmarkCheck size={12} />
+                <span>错题 ({mistakes.length})</span>
               </button>
             )}
           </div>
         </div>
 
         {/* Mode Selector Tabs */}
-        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap gap-2">
+        <div className="pt-2.5 border-t border-zinc-200 flex flex-wrap gap-1.5 font-mono text-xs">
           {[
-            { id: 'group', label: '1. 三大类极速秒判 (五段 vs 一段 vs 不规则)' },
-            { id: 'trap', label: '2. 特殊五段陷阱扫雷 (正常一段 vs 特殊五段)' },
-            { id: 'conjugation', label: '3. 核心活用形态闪击 (ます/ない/て形辨析)' },
+            { id: 'group', label: '1. 三大类秒判' },
+            { id: 'trap', label: '2. 特殊五段排雷' },
+            { id: 'conjugation', label: '3. 核心活用形态' },
           ].map(m => (
             <button
               key={m.id}
@@ -297,10 +276,10 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
                 setQuizMode(m.id as any);
                 playClickSound();
               }}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded border transition-colors cursor-pointer ${
                 quizMode === m.id && !showMistakesOnly
-                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xs'
-                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  ? 'bg-zinc-100 border-zinc-400 text-zinc-900 font-bold'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
               }`}
             >
               {m.label}
@@ -311,35 +290,35 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
 
       {/* Main Question Card */}
       {currentQuestion ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="bg-white rounded-lg border border-zinc-200 p-5 sm:p-6 space-y-4">
           {/* Progress bar */}
           <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 font-bold mb-2">
-              <span>第 {currentIdx + 1} 题 / 共 {activeQuestionList.length} 题</span>
-              <span>进度 {Math.round(((currentIdx + 1) / activeQuestionList.length) * 100)}%</span>
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-500 mb-1.5">
+              <span>题号 {currentIdx + 1} / {activeQuestionList.length}</span>
+              <span>{Math.round(((currentIdx + 1) / activeQuestionList.length) * 100)}%</span>
             </div>
-            <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div className="w-full h-1.5 rounded-full bg-zinc-100 border border-zinc-200 overflow-hidden">
               <div
-                className="h-full bg-indigo-600 transition-all duration-300"
+                className="h-full bg-zinc-700 transition-all duration-300"
                 style={{ width: `${((currentIdx + 1) / activeQuestionList.length) * 100}%` }}
               ></div>
             </div>
           </div>
 
           {/* Question Prompt */}
-          <div className="text-center py-4 space-y-2">
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          <div className="text-center py-2 space-y-1.5">
+            <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
               {currentQuestion.prompt}
             </h3>
             {currentQuestion.subPrompt && (
-              <div className="text-sm text-slate-500 font-medium">
+              <div className="text-xs font-mono text-zinc-500">
                 {currentQuestion.subPrompt}
               </div>
             )}
-            <div className="flex items-center justify-center gap-2 pt-1">
-              <AudioButton text={currentQuestion.verbKanji} size="md" />
+            <div className="flex items-center justify-center gap-2 pt-0.5">
+              <AudioButton text={currentQuestion.verbKanji} size="sm" />
               {currentQuestion.isTrap && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-700 border border-zinc-200">
                   ⚠️ 高频考点
                 </span>
               )}
@@ -347,20 +326,20 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
           </div>
 
           {/* Options */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {currentQuestion.options.map(opt => {
               const isSelected = selectedOption === opt.id;
               const isCorrect = opt.id === currentQuestion.correctOptionId;
 
-              let btnStyle = 'bg-slate-50 border-slate-200 text-slate-800 hover:border-indigo-300 hover:bg-indigo-50/50';
+              let btnStyle = 'bg-white border-zinc-200 text-zinc-800 hover:bg-zinc-50';
 
               if (isAnswered) {
                 if (isCorrect) {
-                  btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900 ring-2 ring-emerald-400 font-bold';
+                  btnStyle = 'bg-zinc-100 border-zinc-500 text-zinc-950 ring-1 ring-zinc-300 font-bold';
                 } else if (isSelected) {
-                  btnStyle = 'bg-rose-50 border-rose-500 text-rose-900 ring-2 ring-rose-400 font-bold';
+                  btnStyle = 'bg-zinc-50 border-zinc-200 text-zinc-400 line-through';
                 } else {
-                  btnStyle = 'bg-slate-50 border-slate-200 text-slate-400 opacity-60';
+                  btnStyle = 'bg-zinc-50 border-zinc-200 text-zinc-400 opacity-60';
                 }
               }
 
@@ -370,19 +349,19 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
                   type="button"
                   onClick={() => handleSelectOption(opt.id)}
                   disabled={isAnswered}
-                  className={`p-4 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${btnStyle}`}
+                  className={`p-3 rounded-md border text-left transition-colors cursor-pointer flex items-center justify-between text-xs ${btnStyle}`}
                 >
                   <div>
-                    <div className="text-sm font-bold">{opt.text}</div>
+                    <div className="font-semibold">{opt.text}</div>
                     {opt.subText && (
-                      <div className="text-xs text-slate-500 mt-0.5">{opt.subText}</div>
+                      <div className="text-[11px] text-zinc-500 mt-0.5">{opt.subText}</div>
                     )}
                   </div>
                   {isAnswered && isCorrect && (
-                    <CheckCircle2 size={18} className="text-emerald-600 shrink-0 ml-2" />
+                    <CheckCircle2 size={16} className="text-zinc-800 shrink-0 ml-2" />
                   )}
                   {isAnswered && isSelected && !isCorrect && (
-                    <XCircle size={18} className="text-rose-600 shrink-0 ml-2" />
+                    <XCircle size={16} className="text-zinc-400 shrink-0 ml-2" />
                   )}
                 </button>
               );
@@ -391,25 +370,21 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
 
           {/* Explanation Banner */}
           {isAnswered && (
-            <div className={`p-4 rounded-xl border text-xs leading-relaxed animate-fade-in ${
-              selectedOption === currentQuestion.correctOptionId
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-950'
-                : 'bg-rose-50 border-rose-200 text-rose-950'
-            }`}>
-              <div className="font-bold flex items-center gap-1.5 mb-1 text-sm">
+            <div className="border-l-3 border-zinc-400 bg-zinc-50 p-3.5 rounded-r-md text-xs leading-relaxed space-y-1">
+              <div className="font-semibold flex items-center gap-1.5 text-zinc-900">
                 {selectedOption === currentQuestion.correctOptionId ? (
                   <>
-                    <CheckCircle2 size={16} className="text-emerald-600" />
+                    <CheckCircle2 size={14} className="text-zinc-800" />
                     <span>回答正确！+10分</span>
                   </>
                 ) : (
                   <>
-                    <XCircle size={16} className="text-rose-600" />
-                    <span>遗憾答错，已记录至错题本</span>
+                    <XCircle size={14} className="text-zinc-500" />
+                    <span>答错，已记录至错题本</span>
                   </>
                 )}
               </div>
-              <p className="text-slate-700 font-medium">
+              <p className="text-zinc-600">
                 <strong>解析：</strong> {currentQuestion.explanation}
               </p>
             </div>
@@ -417,38 +392,38 @@ export const VerbQuiz: React.FC<VerbQuizProps> = ({
 
           {/* Action Button: Next or Finish */}
           {isAnswered && (
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-1">
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-200 transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-mono font-bold text-xs border border-zinc-300 transition-colors cursor-pointer"
               >
-                <span>{currentIdx < activeQuestionList.length - 1 ? '下一题' : '完成本轮测验'}</span>
-                <ArrowRight size={16} />
+                <span>{currentIdx < activeQuestionList.length - 1 ? '下一题' : '完成本轮'}</span>
+                <ArrowRight size={14} />
               </button>
             </div>
           )}
         </div>
       ) : (
         /* Completion State */
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-xs text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
-            🏆
+        <div className="bg-white rounded-lg border border-zinc-200 p-8 text-center space-y-3">
+          <div className="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 flex items-center justify-center mx-auto text-lg font-bold">
+            ✓
           </div>
-          <h3 className="text-2xl font-black text-slate-900">
-            恭喜！测验完成！
+          <h3 className="text-lg font-bold text-zinc-900">
+            测验完成
           </h3>
-          <p className="text-sm text-slate-600">
-            你在本次测验中获得了 <strong className="text-indigo-600">{score}</strong> 分，最高连续答对 <strong className="text-amber-600">{maxStreak}</strong> 题！
+          <p className="text-xs text-zinc-600 font-mono">
+            本次获得 <strong className="text-zinc-900">{score}</strong> 分，最高连续答对 <strong className="text-zinc-900">{maxStreak}</strong> 题。
           </p>
-          <div className="pt-2 flex justify-center gap-3">
+          <div className="pt-2 flex justify-center">
             <button
               type="button"
               onClick={handleRestart}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-mono font-bold text-xs border border-zinc-300 transition-colors cursor-pointer"
             >
-              <RefreshCw size={14} />
-              <span>再练一轮</span>
+              <RefreshCw size={13} />
+              <span>重新开始</span>
             </button>
           </div>
         </div>
