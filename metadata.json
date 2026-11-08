@@ -1,0 +1,6 @@
+{
+  "name": "日语动词分类与变形解密大师",
+  "description": "专为日语学习者打造的动词分类与活用解密工具：交互式三步判断法、音韵词干解剖图解、全形态活用实验室、特殊五段避坑宝典与秒判测验。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Noto Sans JP', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Zen Maru Gothic', 'Noto Sans JP', system-ui, sans-serif;
+}
+
+/* Custom Ruby Annotations for Furigana */
+ruby {
+  ruby-position: over;
+  ruby-align: center;
+}
+
+rt {
+  font-size: 0.6em;
+  font-weight: 500;
+  color: #64748b;
+  user-select: none;
+  transform: translateY(-0.15em);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Subtle dot background for modern educational feel */
+.bg-grid-subtle {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+}
