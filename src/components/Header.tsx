@@ -8,13 +8,15 @@ import {
   Volume2,
   VolumeX,
   GitBranch,
+  RotateCcw,
 } from 'lucide-react';
 import { playClickSound } from '../utils/soundEffects';
 
 export type ActiveTab =
+  | 'lemmatizer'
   | 'detective'
-  | 'why'
   | 'tree'
+  | 'why'
   | 'exceptions'
   | 'conjugation'
   | 'quiz'
@@ -38,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   setSoundEnabled,
 }) => {
   const tabs: { id: ActiveTab; label: string; icon: React.ReactNode; badge?: string }[] = [
+    { id: 'lemmatizer', label: '原形还原仪', icon: <RotateCcw size={17} />, badge: '辞书形' },
     { id: 'detective', label: '三步解密器', icon: <Compass size={17} /> },
     { id: 'tree', label: '形态全景与派生树', icon: <GitBranch size={17} />, badge: '全形态' },
     { id: 'why', label: '为什么要分类？', icon: <HelpCircle size={17} /> },

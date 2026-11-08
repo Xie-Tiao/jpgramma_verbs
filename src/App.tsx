@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { Header, ActiveTab } from './components/Header';
 import { VerbDetective } from './components/VerbDetective';
+import { VerbLemmatizer } from './components/VerbLemmatizer';
 import { WhyCategorizeVisualizer } from './components/WhyCategorizeVisualizer';
 import { MorphologyTree } from './components/MorphologyTree';
 import { ExceptionHandbook } from './components/ExceptionHandbook';
@@ -14,7 +15,7 @@ import { VerbQuiz } from './components/VerbQuiz';
 import { FiftySoundMap } from './components/FiftySoundMap';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('tree');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('lemmatizer');
   const [showRomaji, setShowRomaji] = useState<boolean>(true);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [selectedVerbForConjugation, setSelectedVerbForConjugation] = useState<string>('食べる');
@@ -43,6 +44,14 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {activeTab === 'lemmatizer' && (
+          <VerbLemmatizer
+            showRomaji={showRomaji}
+            onNavigateToDetective={handleSelectVerbInDetective}
+            onNavigateToConjugation={handleViewConjugation}
+          />
+        )}
+
         {activeTab === 'detective' && (
           <VerbDetective
             showRomaji={showRomaji}
