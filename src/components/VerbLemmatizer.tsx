@@ -19,6 +19,10 @@ interface VerbLemmatizerProps {
 }
 
 const PRESET_TEST_CASES = [
+  { input: '発送されていなかった', label: '発送されていなかった', hint: '被动否定' },
+  { input: '連絡させていただきます', label: '連絡させていただきます', hint: '谦让使役' },
+  { input: '開封してみます', label: '開封してみます', hint: '复合补助' },
+  { input: '勉強します', label: '勉強します', hint: 'サ变复合' },
   { input: '帰らせられたくありませんでした', label: '帰らせられたくありませんでした', hint: '四层' },
   { input: '食べさせられたくありませんでした', label: '食べさせられたくありませんでした', hint: '四层' },
   { input: 'させられたくありませんでした', label: 'させられたくありませんでした', hint: '四层' },

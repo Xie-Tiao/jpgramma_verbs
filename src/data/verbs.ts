@@ -703,6 +703,28 @@ const RAW_VERBS: VerbSeed[] = [
       english: 'Please pass me the salt.',
     },
   },
+  {
+    id: 'yaru',
+    kanji: 'やる',
+    reading: 'やる',
+    romaji: 'yaru',
+    meaning: '做 / 进行 / 给',
+    meaningEn: 'do / perform / give',
+    group: 'godan',
+    subgroup: 'godan',
+    stem: 'や',
+    stemType: 'consonant-stem',
+    endingKana: 'る',
+    precedingKana: 'や',
+    precedingVowel: 'a',
+    jlpt: 'N5',
+    exampleSentence: {
+      japanese: '宿題を今すぐやる。',
+      reading: 'しゅくだいをいますぐやる。',
+      chinese: '我现在立刻就做作业。',
+      english: 'I will do my homework right now.',
+    },
+  },
 
   // --- 不规则动词 (Group 3: する / 来る) ---
   {
