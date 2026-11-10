@@ -41,6 +41,7 @@ export function generateConjugations(
         imperative: { form: '来い', kana: 'こい', romaji: 'koi', suffix: 'い', stem: 'こ', ruleLabel: '命令形', description: '来！(命令)' },
         passive: { form: '来られる', kana: 'こられる', romaji: 'korareru', suffix: 'られる', stem: 'こ', ruleLabel: '被动态', description: '被来 (受害受身)' },
         causative: { form: '来させる', kana: 'こさせる', romaji: 'kosaseru', suffix: 'させる', stem: 'こ', ruleLabel: '使役态', description: '让...来' },
+        causative_passive: { form: '来させられる', kana: 'こさせられる', romaji: 'kosaserareru', suffix: 'させられる', stem: 'こ', ruleLabel: '未然形「こ」+ させられる', description: '使役受身态 (被迫来)' },
       };
     }
 
@@ -63,6 +64,7 @@ export function generateConjugations(
       imperative: { form: prefix + 'しろ', kana: prefixKana + 'しろ', romaji: toRomaji(prefixKana) + 'shiro', suffix: 'しろ', stem: prefix, ruleLabel: '命令形', description: '做！(命令)' },
       passive: { form: prefix + 'される', kana: prefixKana + 'される', romaji: toRomaji(prefixKana) + 'sareru', suffix: 'される', stem: prefix, ruleLabel: '被动态', description: '被做' },
       causative: { form: prefix + 'させる', kana: prefixKana + 'させる', romaji: toRomaji(prefixKana) + 'saseru', suffix: 'させる', stem: prefix, ruleLabel: '使役态', description: '让...做' },
+      causative_passive: { form: prefix + 'させられる', kana: prefixKana + 'させられる', romaji: toRomaji(prefixKana) + 'saserareru', suffix: 'させられる', stem: prefix, ruleLabel: '未然形 + させられる', description: '使役受身态 (被迫做)' },
     };
   }
 
@@ -86,6 +88,7 @@ export function generateConjugations(
       imperative: { form: kStem + 'ろ', kana: rStem + 'ろ', romaji: toRomaji(rStem) + 'ro', suffix: 'ろ', stem: kStem, ruleLabel: '去「る」+ ろ', description: '命令形' },
       passive: { form: kStem + 'られる', kana: rStem + 'られる', romaji: toRomaji(rStem) + 'rareru', suffix: 'られる', stem: kStem, ruleLabel: '去「る」+ られる', description: '被动态' },
       causative: { form: kStem + 'させる', kana: rStem + 'させる', romaji: toRomaji(rStem) + 'saseru', suffix: 'させる', stem: kStem, ruleLabel: '去「る」+ させる', description: '使役态' },
+      causative_passive: { form: kStem + 'させられる', kana: rStem + 'させられる', romaji: toRomaji(rStem) + 'saserareru', suffix: 'させられる', stem: kStem, ruleLabel: '去「る」+ させられる', description: '使役受身态 (被迫做)' },
     };
   }
 
@@ -104,6 +107,18 @@ export function generateConjugations(
     onbinNote = '特殊促音便 (っ)';
   }
 
+  // Causative-passive for Godan:
+  // - If ending in 'す' (e.g. 話す): Must use full form 話させられる (since さされる is forbidden)
+  // - All other endings (e.g. 書く, 帰る, 飲む, 待つ): Modern standard contracted form (约音短形: 書かされる, 帰らされる)
+  const isSuEnding = endingKana === 'す';
+  const cpForm = isSuEnding ? kStem + 'させられる' : kStem + godanRow.a + 'される';
+  const cpKana = isSuEnding ? rStem + 'させられる' : rStem + godanRow.a + 'される';
+  const cpRomaji = isSuEnding ? toRomaji(rStem) + 'saserareru' : toRomaji(rStem + godanRow.a) + 'sareru';
+  const cpSuffix = isSuEnding ? 'させられる' : godanRow.a + 'される';
+  const cpRuleLabel = isSuEnding
+    ? '词尾「す」变あ段「さ」+ せられる（避免「さされる」拗口严格禁止约音）'
+    : `五段常用约音：词尾变あ段「${godanRow.a}」+ される（全称亦作「${godanRow.a}せられる」）`;
+
   return {
     dictionary: { form: kanji, kana: reading, romaji: toRomaji(reading), suffix: endingKana, stem: kStem, ruleLabel: 'う段原形', description: '原形 (辞书形)' },
     masu: { form: kStem + godanRow.i + 'ます', kana: rStem + godanRow.i + 'ます', romaji: toRomaji(rStem + godanRow.i) + 'masu', suffix: godanRow.i + 'ます', stem: kStem, ruleLabel: `词尾「${endingKana}」变い段「${godanRow.i}」+ ます`, description: '礼貌体 (敬体)' },
@@ -119,6 +134,7 @@ export function generateConjugations(
     imperative: { form: kStem + godanRow.e, kana: rStem + godanRow.e, romaji: toRomaji(rStem + godanRow.e), suffix: godanRow.e, stem: kStem, ruleLabel: `词尾直接跳至え段「${godanRow.e}」`, description: '命令形' },
     passive: { form: kStem + godanRow.a + 'れる', kana: rStem + godanRow.a + 'れる', romaji: toRomaji(rStem + godanRow.a) + 'reru', suffix: godanRow.a + 'れる', stem: kStem, ruleLabel: `词尾变あ段「${godanRow.a}」+ れる`, description: '被动态' },
     causative: { form: kStem + godanRow.a + 'せる', kana: rStem + godanRow.a + 'せる', romaji: toRomaji(rStem + godanRow.a) + 'seru', suffix: godanRow.a + 'せる', stem: kStem, ruleLabel: `词尾变あ段「${godanRow.a}」+ せる`, description: '使役态' },
+    causative_passive: { form: cpForm, kana: cpKana, romaji: cpRomaji, suffix: cpSuffix, stem: kStem, ruleLabel: cpRuleLabel, description: '使役受身态 (被迫做)' },
   };
 }
 

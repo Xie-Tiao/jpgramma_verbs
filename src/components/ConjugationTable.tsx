@@ -47,6 +47,7 @@ export const ConjugationTable: React.FC<ConjugationTableProps> = ({
     { key: 'imperative', name: '命令形 (命令/指示)', form: diagnostic.conjugations.imperative, category: 'advanced', tag: '命令形' },
     { key: 'passive', name: '被动态 (受身形/被做)', form: diagnostic.conjugations.passive, category: 'potential_passive', tag: '受身态' },
     { key: 'causative', name: '使役态 (让...做)', form: diagnostic.conjugations.causative, category: 'potential_passive', tag: '使役态' },
+    { key: 'causative_passive', name: '使役受身态 (被迫做)', form: diagnostic.conjugations.causative_passive, category: 'potential_passive', tag: '使役受身' },
   ];
 
   const filteredForms = formsList.filter(item => {

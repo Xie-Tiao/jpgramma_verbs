@@ -243,8 +243,8 @@ const QUESTION_BANK: ReverseQuestion[] = [
   // Level 3: 高阶挑战 (三层复合)
   {
     id: 'l3_1',
-    targetWord: '書かせられたい',
-    reading: 'かかせられたい',
+    targetWord: '書かされたい',
+    reading: 'かかされたい',
     meaning: '想要被迫去写（被逼着写）',
     difficulty: 3,
     difficultyLabel: 'Level 3 · 高阶三层',
@@ -256,10 +256,10 @@ const QUESTION_BANK: ReverseQuestion[] = [
     tense: 'present',
     segments: [
       { text: '書か', label: '五段未然 (k-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
-      { text: 'せられ', label: '使役受身 (被迫做)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'され', label: '使役受身约音形', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
       { text: 'たい', label: '愿望态 (想要)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
-    explanation: '「書く」➔ 使役受身「書かせられる（被迫写）」➔ 去る接愿望「たい」= 書かせられたい。',
+    explanation: '五段动词「書く」在现代日语中使役受身压倒性通用约音短形「書かされる」（未然形 a段 + される，书面理论全称亦作「書かせられる」）。去「る」接愿望助动词「たい」= 書かされたい。',
   },
   {
     id: 'l3_2',
@@ -307,8 +307,8 @@ const QUESTION_BANK: ReverseQuestion[] = [
   // Level 4: 终极地狱 (四层深度组合)
   {
     id: 'l4_1',
-    targetWord: '書かせられたくありませんでした',
-    reading: 'かかせられたくありませんでした',
+    targetWord: '書かされたくありませんでした',
+    reading: 'かかされたくありませんでした',
     meaning: '我当时一点也不想被迫去写（礼貌过去否定）',
     difficulty: 4,
     difficultyLabel: 'Level 4 · 终极四层',
@@ -320,11 +320,11 @@ const QUESTION_BANK: ReverseQuestion[] = [
     tense: 'past',
     segments: [
       { text: '書か', label: '五段未然形 (kak-a)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
-      { text: 'せられ', label: '使役受身 (被迫做)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
+      { text: 'され', label: '使役受身约音形', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
       { text: 'たく', label: '愿望态连用 (-tai)', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
       { text: 'ありませんでした', label: '敬体·过去·否定', color: 'bg-zinc-100 text-zinc-800 border border-zinc-200' },
     ],
-    explanation: '高难度多层嵌套：原形【書く】➔ 语态【使役受身 させられる（被迫写）】➔ 情态【愿望たい（想）】➔ 敬体否定过去【ありませんでした】。',
+    explanation: '高难度多层嵌套：原形【書く】➔ 语态【五段使役受身标准约音短形 書かされる（被迫写，书面全称亦作 書かせられる）】➔ 情态【愿望たい连用形 たく】➔ 敬体过去否定【ありませんでした】。',
   },
   {
     id: 'l4_2',

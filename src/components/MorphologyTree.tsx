@@ -117,7 +117,15 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = () => {
     } else if (voice === 'causative_passive') {
       if (verbConfig.group === 'ichidan') voiceStem = verbConfig.stem + 'させられる';
       else if (verbConfig.group === 'irregular') voiceStem = 'させられる';
-      else voiceStem = verbConfig.stem + verbConfig.a_row + 'せられる';
+      else {
+        // 五段动词（含特殊五段）：现代日语与JLPT标准压倒性通用约音短形 (a段 + される)
+        // 例外：以「す」结尾的五段动词（如 話す、探す）避免双重 さ，必须使用「させられる」
+        if (verbConfig.u_row === 'す' || verbConfig.kanji.endsWith('す')) {
+          voiceStem = verbConfig.stem + 'させられる';
+        } else {
+          voiceStem = verbConfig.stem + verbConfig.a_row + 'される';
+        }
+      }
       voiceMeaning = `被迫${verbConfig.meaning}`;
       steps.push({ label: '使役受身 (被迫做)', fragment: voiceStem, meaning: voiceMeaning });
     }
@@ -771,7 +779,7 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = () => {
                 { name: '12. 禁止形', func: '严厉禁止 (原形 + な)', godan: '書くな', ichidan: '食べるな', irreg: 'するな / 来るな', mean: '不准写！不准吃！' },
                 { name: '13. 被动态 (受身形)', func: '主语受到动作或受害受身', godan: '書かれる', ichidan: '食べられる', irreg: 'される / 来られる', mean: '被写 / 被吃' },
                 { name: '14. 使役态', func: '让别人做、放任允许', godan: '書かせる', ichidan: '食べさせる', irreg: 'させる / 来させる', mean: '让...写 / 让...吃' },
-                { name: '15. 使役受身态', func: '被迫无可奈何做某事', godan: '書かせられる', ichidan: '食べさせられる', irreg: 'させられる', mean: '被迫去写 / 被逼吃' },
+                { name: '15. 使役受身态', func: '被迫无可奈何做某事', godan: '書かされる (书面亦作: 書かせられる)', ichidan: '食べさせられる', irreg: 'させられる / 来させられる', mean: '被迫去写 / 被逼吃' },
                 { name: '16. 愿望态 (-たい)', func: '第一人称表达想要做', godan: '書きたい', ichidan: '食べたい', irreg: 'したい / 来たい', mean: '想写 / 想吃' },
               ].map((row, idx) => (
                 <tr key={idx} className="hover:bg-zinc-50">
@@ -785,6 +793,22 @@ export const MorphologyTree: React.FC<MorphologyTreeProps> = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Linguistic tip on causative-passive */}
+        <div className="bg-zinc-50 border border-zinc-200 rounded p-3 text-xs text-zinc-700 space-y-1">
+          <div className="font-semibold text-zinc-900 font-mono">
+            &gt; 文法注记：使役受身态（被迫做）的标准形态与约音法则
+          </div>
+          <p className="text-zinc-600 leading-relaxed">
+            • <strong className="text-zinc-900">五段动词（除「す」结尾）及特殊五段</strong>：现代日语与 JLPT 各级考题中，<strong>压倒性通用约音短形</strong>（<code className="bg-zinc-200 px-1 py-0.5 rounded text-zinc-900 font-mono">未然形 a段 + される</code>），例如：<code className="text-zinc-900 font-mono">書く ➔ 書かされる</code>、<code className="text-zinc-900 font-mono">帰る ➔ 帰らされる</code>、<code className="text-zinc-900 font-mono">飲む ➔ 飲まされる</code>、<code className="text-zinc-900 font-mono">待つ ➔ 待たされる</code>。原理论全称「〜せられる」（如 書かせられる、帰らせられる）虽语法成立但现代语中极显僵硬繁琐。
+          </p>
+          <p className="text-zinc-600 leading-relaxed">
+            • <strong className="text-zinc-900">特例（以「す」结尾的五段）</strong>：如 <code className="text-zinc-900 font-mono">話す、探す、押す</code>，为避免双重「さ」发音拗口，<strong>严禁约音</strong>（不可说「話さされる」），必须且只能用全称：<code className="text-zinc-900 font-mono">話させられる</code>、<code className="text-zinc-900 font-mono">探させられる</code>。
+          </p>
+          <p className="text-zinc-600 leading-relaxed">
+            • <strong className="text-zinc-900">一段动词与不规则动词</strong>：不能约音，一律用 <code className="bg-zinc-200 px-1 py-0.5 rounded text-zinc-900 font-mono">〜させられる</code>，如 <code className="text-zinc-900 font-mono">食べさせられる</code>、<code className="text-zinc-900 font-mono">させられる</code>、<code className="text-zinc-900 font-mono">来（こ）させられる</code>。
+          </p>
         </div>
       </div>
 

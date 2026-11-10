@@ -38,6 +38,7 @@ export interface VerbConjugations {
   imperative: ConjugationForm;     // 命令形
   passive: ConjugationForm;        // 被动态 (受身形)
   causative: ConjugationForm;      // 使役态 (使役形)
+  causative_passive: ConjugationForm; // 使役受身态 (被迫做)
 }
 
 export interface VerbItem {
